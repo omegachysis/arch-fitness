@@ -13,9 +13,44 @@ Explain the pushup and good-form pushups and explain the purpose of the pushup
  - make sure to include a medical notice and agreement
 
 2.
-Initial test
+Ask for age (this will be important to ranking tests)
+ - note you should be able to refuse this.  If they do, assume under 40 years old
 
 3.
-Assign rank based on test performance
+Initial test
 
 4.
+Assign rank based on test performance
+For those under 40:
+ rank 1: 0-5
+ rank 2: 6-14
+ rank 3: 15-29
+ rank 4: 30-49
+ rank 5: 50-99
+ rank 6: 100-150
+ rank 7: 150 & above
+
+For those 40-55:
+ rank 1: 0-5
+ rank 2: 6-12
+ rank 3: 13-24
+ rank 4: 25-44
+ rank 5: 45-74
+ rank 6: 75-124
+ rank 7: 125 & above
+
+For those above 55:
+ rank 1: 0-5
+ rank 2: 6-10
+ rank 3: 11-19
+ rank 4: 20-34
+ rank 5: 35-64
+ rank 6: 65-99
+ rank 7: 100 & above
+
+5.
+Start Week 1 Day 1 training
+
+If initial test score is greater than 20, skip to Week 3 Day 1, or let the user
+choose to start at week 1
+
