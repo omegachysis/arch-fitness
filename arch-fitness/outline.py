@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def initial_procedure():
+def initialProcedure():
     print ("Explain the pushup and good-form " + \
            "pushups and explain the purpose of the pushup")
     
@@ -33,7 +33,7 @@ below, if you do not wish to provide it, just press 'skip this step'.""")
 
     input("End initial procedure...")
 
-def pushups_test(continuous=True):
+def pushupsTest(continuous=True):
     # Ask the user to perform as many pushups as they can in a row,
     # then return the number they have reported.
     pushups = 0
@@ -60,7 +60,7 @@ from exhaustion, or are forced to break proper form.""")
 
     return pushups
 
-def initial_test():
+def initialTest():
     print("This test will outline your basic health.")
     print("Perform as many good-form pushups as you can.")
 
@@ -75,7 +75,7 @@ following.""")
 
     input("This can be changed any time in 'settings'")
 
-    pushups_test(continuous)
+    initialTestScore = pushupsTest(continuous)
     
-initial_procedure()
-initial_test()
+initialProcedure()
+initialTest()
