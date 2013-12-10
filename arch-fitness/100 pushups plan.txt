@@ -1,6 +1,10 @@
 
 FEATURES:
-
+ - Calendar hilighting days worked out
+ - Two modes of recording: solid report (user presses a button to mark the end of a set), and continuous report (user presses a button for every pushup performs and the program tracks progress)
+ - Two modes of form: (these will NOT affect the program itself!)
+    - Endurance - program emphasizes importance of slow pushups and continuous reporting will require that you take a given amount of time to each pushup
+    - Speed - program ignores speed (generally not a good idea, but common in fitness testing)
 
 PROCEDURE:
 
@@ -12,3 +16,6 @@ Explain the pushup and good-form pushups and explain the purpose of the pushup
 Initial test
 
 3.
+Assign rank based on test performance
+
+4.
