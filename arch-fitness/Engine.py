@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 
 import pygame
 import sys
 from pygame.locals import *
+import traceback
 
 def main():
     game = Game(640, 480)
@@ -17,7 +19,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
 
         Application.canvas = self.canvas
-        Appliaction.game = self
+        Application.game = self
         Sprite.game = self
 
         self.app = None
@@ -31,13 +33,13 @@ class Game(object):
             
             if self.app:
                 self.app.update(dt)
-                self.app.draw(self.canvas)
+                self.app.draw()
 
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == KEYDown:
+                elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         pygame.event.post(pygame.event.Event(QUIT))
 
@@ -49,7 +51,7 @@ class Application(object):
     game = None
     def __init__(self):
         self.sprites = []
-        self.width, self.height = canvas.get_size()
+        self.width, self.height = Application.canvas.get_size()
         self.backgroundSurface = None
         self.backgroundColor = (0,0,0,255)
         
@@ -69,7 +71,7 @@ class Application(object):
         if self.backgroundSurface:
             self.canvas.blit(self.backgroundSurface, (0,0))
         elif self.backgroundColor:
-            self.canvas.fill(slef.backgroundColor)
+            self.canvas.fill(self.backgroundColor)
         
         for sprite in self.sprites:
             sprite.draw(self.canvas)
@@ -148,4 +150,8 @@ class Sprite(object):
     #---------------------------------------------
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        print (traceback.format_exc())
+        input ()
