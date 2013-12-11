@@ -6,8 +6,16 @@ from pygame.locals import *
 import traceback
 
 def main():
-    game = Game(640, 480)
+    game = Game(1280, 720)
+    
     testApp = Application()
+    testApp.backgroundColor = (255, 0, 255, 255)
+
+    testSurface = pygame.image.load("test.png")
+    testSprite = Sprite(testSurface, 250, 250)
+
+    testApp.addSprite(testSprite)
+    
     game.startApp(testApp)
     game.run()
 
@@ -78,9 +86,7 @@ class Application(object):
 
 class Sprite(object):
     game = None
-    def __init__(self, app, x, y, surface):
-        self.app = app
-        
+    def __init__(self, surface, x, y):
         self.surface = surface
         self.x = x
         self.y = y
@@ -94,6 +100,9 @@ class Sprite(object):
     
     def draw(self, canvas):
         canvas.blit(self.surface, self.rect)
+
+    def destroy(self):
+        self.app.removeSprite(self)
 
     # ----------------------------------------------
     # Setup class properties
