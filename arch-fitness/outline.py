@@ -133,6 +133,9 @@ following.""")
             rank = 7
         else:
             rank = 8
+
+    print ("You were ranked to RANK ", rank)
+    input ()
     
     
 initialProcedure()
