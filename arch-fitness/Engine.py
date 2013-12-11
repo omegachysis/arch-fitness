@@ -5,7 +5,16 @@ class Sprite(object):
 
         self.x = x
         self.y = y
+    
+    def update(self, dt):
+        pass
+    
+    def draw(self, screen):
+        pass
 
+    # ----------------------------------------------
+    # Setup class properties
+    
     def getX(self):
         return self._x
     def setX(self, x):
@@ -45,9 +54,5 @@ class Sprite(object):
         self._width = surface.get_width()
         self._height= surface.get_height()
     surface = property(getSurface, setSurface)
-    
-    def update(self, dt):
-        pass
-    
-    def draw(self, screen):
-        pass
+
+    #---------------------------------------------
