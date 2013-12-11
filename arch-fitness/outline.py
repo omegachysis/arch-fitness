@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
+age = 0
+
 def initialProcedure():
+    global age
+    
     print ("Explain the pushup and good-form " + \
            "pushups and explain the purpose of the pushup")
     
@@ -75,7 +79,61 @@ following.""")
 
     input("This can be changed any time in 'settings'")
 
-    initialTestScore = pushupsTest(continuous)
+    score = pushupsTest(continuous)
+    rank = 0
+
+    if age < 40:
+        if score in range(0, 6):
+            rank = 1
+        elif score in range(6, 15):
+            rank = 2
+        elif score in range(15, 30):
+            rank = 3
+        elif score in range(30, 50):
+            rank = 4
+        elif score in range(50, 100):
+            rank = 5
+        elif score in range(100, 150):
+            rank = 6
+        elif score >= 150:
+            rank = 7
+        else:
+            rank = 8
+    elif age in range(40, 56):
+        if score in range(0, 6):
+            rank = 1
+        elif score in range(6, 13):
+            rank = 2
+        elif score in range(13, 25):
+            rank = 3
+        elif score in range(25, 45):
+            rank = 4
+        elif score in range(45, 75):
+            rank = 5
+        elif score in range(75, 125):
+            rank = 6
+        elif score >= 125:
+            rank = 7
+        else:
+            rank = 8
+    elif age >= 56:
+        if score in range(0, 6):
+            rank = 1
+        elif score in range(6, 11):
+            rank = 2
+        elif score in range(11, 20):
+            rank = 3
+        elif score in range(20, 35):
+            rank = 4
+        elif score in range(35, 65):
+            rank = 5
+        elif score in range(65, 100):
+            rank = 6
+        elif score >= 100:
+            rank = 7
+        else:
+            rank = 8
+    
     
 initialProcedure()
 initialTest()
