@@ -3,14 +3,57 @@ import pygame
 import sys
 from pygame.locals import *
 
+def main():
+    game = Game(640, 480)
+    testApp = Application()
+    game.startApp(testApp)
+    game.run()
+
+class Game(object):
+    
+    def __init__(self, width, height):
+        self.canvas = pygame.display.set_mode((width, height))
+        pygame.display.set_caption("My Game")
+        self.clock = pygame.time.Clock()
+
+        Application.canvas = self.canvas
+        Appliaction.game = self
+        Sprite.game = self
+
+        self.app = None
+        
+    def startApp(self, application):
+        self.app = application
+        
+    def run(self):
+        while True:
+            dt = self.clock.get_time()
+            
+            if self.app:
+                self.app.update(dt)
+                self.app.draw(self.canvas)
+
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == KEYDown:
+                    if event.key == K_ESCAPE:
+                        pygame.event.post(pygame.event.Event(QUIT))
+
+            pygame.display.update()
+            self.clock.tick(0)
+
 class Application(object):
-    def __init__(self, canvas, width, height):
+    canvas = None
+    game = None
+    def __init__(self):
         self.sprites = []
-        self.width = width
-        self.height = height
+        self.width, self.height = canvas.get_size()
         self.backgroundSurface = None
         self.backgroundColor = (0,0,0,255)
-        self.canvas = canvas
+        
+        self.canvas = Application.canvas
         
     def addSprite(self, sprite):
         sprite.app = self
@@ -19,9 +62,9 @@ class Application(object):
         if sprite in self.sprites:
             self.sprites.remove(sprite)
     
-    def update(self):
+    def update(self, dt):
         for sprite in self.sprites:
-            sprite.update()
+            sprite.update(dt)
     def draw(self):
         if self.backgroundSurface:
             self.canvas.blit(self.backgroundSurface, (0,0))
@@ -29,9 +72,10 @@ class Application(object):
             self.canvas.fill(slef.backgroundColor)
         
         for sprite in self.sprites:
-            sprite.draw()
+            sprite.draw(self.canvas)
 
 class Sprite(object):
+    game = None
     def __init__(self, app, x, y, surface):
         self.app = app
         
@@ -42,12 +86,12 @@ class Sprite(object):
         self.dx = 0
         self.dy = 0
     
-    def update(self):
-        self.x += self.dx * app.dt
-        self.y += self.dy * app.dt
+    def update(self, dt):
+        self.x += self.dx * dt
+        self.y += self.dy * dt
     
-    def draw(self):
-        self.app.canvas.blit(self.surface, self.rect)
+    def draw(self, canvas):
+        canvas.blit(self.surface, self.rect)
 
     # ----------------------------------------------
     # Setup class properties
@@ -102,3 +146,6 @@ class Sprite(object):
     rect = property(getRect, setRect)
 
     #---------------------------------------------
+
+if __name__ == "__main__":
+    main()
