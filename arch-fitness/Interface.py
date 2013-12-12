@@ -25,10 +25,15 @@ class SolidButton(Engine.Sprite):
     STATE_HOVER = 1
     STATE_PRESS = 2
     def __init__(self, x, y, width, height, colorReset, colorHover, colorPress, command):
+        """
+        Create a solid colored button that runs 'command' when clicked.
+        """
 
+        # Fill a rectangular and blank surface with the reset color
         self.surface = pygame.Surface((width, height))
         self.surface.fill(colorReset)
-        
+
+        # Set up Sprite object
         super(SolidButton, self).__init__(self.surface, x, y)
 
         self.state = SolidButton.STATE_RESET
@@ -40,18 +45,19 @@ class SolidButton(Engine.Sprite):
         self.command = command
 
     def hover(self):
+        """State invoked when the mouse is on top of the button."""
         if self.state != SolidButton.STATE_HOVER:
             self.state = SolidButton.STATE_HOVER
             self.surface.fill(self.colorHover)
-            print ("HOVER")
     def press(self):
+        """State invoked when the mouse is on top of the button and clicks."""
         if self.state != SolidButton.STATE_PRESS:
             self.state = SolidButton.STATE_PRESS
             self.surface.fill(self.colorPress)
             if self.command:
                 self.command()
-            print ("PRESS")
     def reset(self):
+        """State invoked when the mouse is outside of the button boundary."""
         if self.state != SolidButton.STATE_RESET:
             self.state = SolidButton.STATE_RESET
             self.surface.fill(self.colorReset)
