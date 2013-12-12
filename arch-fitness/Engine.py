@@ -159,8 +159,5 @@ class Sprite(object):
     #---------------------------------------------
 
 if __name__ == "__main__":
-    try:
-        main()
-    except:
-        print (traceback.format_exc())
-        input ()
+    import Debug
+    Debug.test(main)
