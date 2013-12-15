@@ -53,15 +53,16 @@ class SolidButton(Engine.Sprite):
     def hover(self):
         """State invoked when the mouse is on top of the button."""
         if self.state != SolidButton.STATE_HOVER:
-            self.state = SolidButton.STATE_HOVER
             self.surface.fill(self.colorHover)
+            if self.state == SolidButton.STATE_PRESS:
+                if self.command:
+                    self.command()
+            self.state = SolidButton.STATE_HOVER
     def press(self):
         """State invoked when the mouse is on top of the button and clicks."""
         if self.state != SolidButton.STATE_PRESS:
             self.state = SolidButton.STATE_PRESS
             self.surface.fill(self.colorPress)
-            if self.command:
-                self.command()
     def reset(self):
         """State invoked when the mouse is outside of the button boundary."""
         if self.state != SolidButton.STATE_RESET:
