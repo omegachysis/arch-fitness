@@ -12,8 +12,8 @@ def main():
     testApp = Application()
     testApp.backgroundColor = (0, 0, 50, 255)
 
-    testSurface = pygame.image.load("test.png")
-    testSprite = Sprite(testSurface, 250, 250)
+    testsurface = pygame.image.load("test.png")
+    testSprite = Sprite(testsurface, 250, 250)
 
     testApp.addSprite(testSprite)
 
@@ -72,31 +72,111 @@ class Application(object):
     canvas = None
     game = None
     def __init__(self):
-        self.sprites = []
+        self._layers = []
+        self.layers = {}
+        
         self.width, self.height = Application.canvas.get_size()
-        self.backgroundSurface = None
+        self.backgroundsurface = None
         self.backgroundColor = (0,0,0,255)
         
         self.canvas = Application.canvas
+
+        self.addLayer("default")
+
+    def getLayerlevel(self, layer):
+        return self._layers.index(layer)
+
+    def addLayer(self, name):
+        layer = Layer(name)
+        layer.app = self
+        self.layers[name] = layer
+        self._layers.append(layer)
+    def removeLayer(self, layer):
+        layer = self.getLayer(layer)
+        self._layers.remove(layer)
+        del self.layers[layer.name]
+    def renameLayer(self, layer, name):
+        del self.layers[layer.name]
+        self.layers[name] = layer
         
-    def addSprite(self, sprite):
-        sprite.app = self
-        self.sprites.append(sprite)
+    def moveLayer(self, layer, level):
+        self.removeLayer(layer)
+        if level == len(self._layers) - 1:
+            self._layers.append(layer)
+        else:
+            self._layers = self._layers[:level] + [layer] + self._layers[level+1:]
+
+    def getLayer(self, layer):
+        if isinstance(layer, Layer):
+            return layer
+        elif isinstance(layer, str):
+            return self.layers[layer]
+        elif isinstance(layer, int):
+            return self._layers[layer]
+        else:
+            return None
+
+    def addSprite(self, sprite, layer=0):
+        if isinstance(layer, Layer):
+            layer.addSprite(sprite)
+        elif isinstance(layer, str):
+            self.layers[layer].addSprite(sprite)
+        elif isinstance(layer, int):
+            self._layers[layer].addSprite(sprite)
+        else:
+            pass
+        
     def removeSprite(self, sprite):
-        if sprite in self.sprites:
-            self.sprites.remove(sprite)
+        self._layers[sprite.layer.level].removeSprite(sprite)
     
     def update(self, dt):
-        for sprite in self.sprites:
-            sprite.update(dt)
+        for layer in self._layers:
+            layer.update(dt)
+                
     def draw(self):
-        if self.backgroundSurface:
-            self.canvas.blit(self.backgroundSurface, (0,0))
+        if self.backgroundsurface:
+            self.canvas.blit(self.backgroundsurface, (0,0))
         elif self.backgroundColor:
             self.canvas.fill(self.backgroundColor)
         
+        for layer in self._layers:
+            layer.draw(Application.canvas)
+
+class Layer(object):
+    def __init__(self, name):
+        self.sprites = []
+        self._name = name
+        self.app = None
+
+    def getlevel(self):
+        return self.app.getLayerlevel(self)
+    def setlevel(self, level):
+        if level != self.getlevel():
+            self.app.moveLayer(self, level)
+    level = property(getlevel, setlevel)
+
+    def getName(self):
+        return self._name
+    def setName(self, name):
+        self._name = name
+        self.app.renameLayer(self, name)
+    name = property(getName, setName)
+
+    def addSprite(self, sprite):
+        sprite.app = self.app
+        sprite.layer = self
+        self.sprites.append(sprite)
+
+    def removeSprite(self, sprite):
+        if sprite in self.sprites:
+            self.sprites.remove(sprite)
+
+    def update(self, dt):
         for sprite in self.sprites:
-            sprite.draw(self.canvas)
+            sprite.tick(dt)
+    def draw(self, canvas):
+        for sprite in self.sprites:
+            sprite.draw(canvas)
 
 class Sprite(object):
     game = None
@@ -107,14 +187,24 @@ class Sprite(object):
 
         self.dx = 0
         self.dy = 0
+
+        # App is a variable tracking the game application.
+        # It is assigned when the sprite is added to the draw list.
+        self.app = None
+        self.layer = None
     
-    def update(self, dt):
+    def tick(self, dt):
         self.x += self.dx * dt
         self.y += self.dy * dt
+
+        self.update(dt)
+
+    def update(self, dt):
+        pass
     
     def draw(self, canvas):
         canvas.blit(self._surface, self._rect)
-
+            
     def destroy(self):
         self.app.removeSprite(self)
 
@@ -131,6 +221,7 @@ class Sprite(object):
     def setY(self, y):
         self._rect.centery = y
         self._y = y
+        
     x = property(getX, setX)
     y = property(getY, setY)
 
@@ -150,6 +241,7 @@ class Sprite(object):
         return self._y + self._rect.height / 2
     def setBottom(self, bottom):
         self._y = bottom - self._rect.height / 2
+        
     left = property(getLeft, setLeft)
     right = property(getRight, setRight)
     top = property(getTop, setTop)
@@ -162,12 +254,12 @@ class Sprite(object):
     width = property(getWidth)
     height= property(getHeight)
 
-    def getSurface(self):
+    def getsurface(self):
         return self._surface
-    def setSurface(self, surface):
+    def setsurface(self, surface):
         self._surface = surface
         self._rect = surface.get_rect()
-    surface = property(getSurface, setSurface)
+    surface = property(getsurface, setsurface)
 
     def getRect(self):        
         return self._rect
