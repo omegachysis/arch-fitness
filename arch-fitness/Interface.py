@@ -17,6 +17,12 @@ def main():
 
     testApp.addSprite(testButton)
 
+    testButton2 = SolidButton(200, 100, 50, 50,
+                             (255,0,0,255), (255,0,255,255), (0,255,0,255),
+                             game.quit)
+
+    testApp.addSprite(testButton2)
+
     game.startApp(testApp)
     game.run()
 

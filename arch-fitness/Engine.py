@@ -34,6 +34,9 @@ class Game(object):
         
     def startApp(self, application):
         self.app = application
+
+    def postEvent(self, event):
+        pygame.event.post(pygame.event.Event(event))
         
     def run(self):
         while True:
@@ -45,14 +48,17 @@ class Game(object):
 
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    self.quit()
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
-                        pygame.event.post(pygame.event.Event(QUIT))
+                        self.postEvent(QUIT)
 
             pygame.display.update()
             self.clock.tick(0)
+
+    def quit(self):
+        pygame.quit()
+        sys.exit()
 
 class Application(object):
     canvas = None
