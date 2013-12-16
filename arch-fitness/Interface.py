@@ -6,6 +6,8 @@ import logging
 
 import Engine
 
+log = logging.getLogger("root.interface")
+
 def main():
     game = Engine.Game(1280, 720)
 
@@ -38,7 +40,7 @@ class SolidButton(Engine.Sprite):
         """
         Create a solid colored button that runs 'command' when clicked.
         """
-        logging.debug("intializing new solid button")
+        log.debug("intializing new solid button")
 
         # Fill a rectangular and blank surface with the reset color
         self.surface = pygame.Surface((width, height))
@@ -80,7 +82,7 @@ class SolidButton(Engine.Sprite):
     def hover(self):
         """State invoked when the mouse is on top of the button."""
         if self.state != SolidButton.STATE_HOVER:
-            logging.debug("hovering over button")
+            log.debug("hovering over button")
             self.surface.fill(self.colorHover)
             if self.state == SolidButton.STATE_PRESS:
                 if self.command:
@@ -89,13 +91,13 @@ class SolidButton(Engine.Sprite):
     def press(self):
         """State invoked when the mouse is on top of the button and clicks."""
         if self.state != SolidButton.STATE_PRESS:
-            logging.debug("pressing button")
+            log.debug("pressing button")
             self.state = SolidButton.STATE_PRESS
             self.surface.fill(self.colorPress)
     def reset(self):
         """State invoked when the mouse is outside of the button boundary."""
         if self.state != SolidButton.STATE_RESET:
-            logging.debug("resetting button")
+            log.debug("resetting button")
             self.state = SolidButton.STATE_RESET
             self.surface.fill(self.colorReset)
 

@@ -9,9 +9,11 @@ import logging
 
 from Motion.Action import Action
 
-def test():
-    import Debug
-    Debug.test(main, logging.DEBUG)
+import Debug
+    
+log = logging.getLogger("root.engine")
+
+import Interface
 
 def main():
     import Motion
@@ -42,7 +44,6 @@ def main():
     testSprite.addMotion(Motion.looped(Motion.In.Fade(5.0, 255), 1))
 
     #---------------------------------------
-    import Interface
 
     global subjectSprite
     global subjectMotion
@@ -71,7 +72,7 @@ def main():
 class Game(object):
     
     def __init__(self, width, height):
-        logging.info("initializing game engine")
+        log.info("initializing game engine")
         
         pygame.init()
         
@@ -89,11 +90,11 @@ class Game(object):
         self.app = application
 
     def postEvent(self, event):
-        logging.info("posted event - " + event)
+        log.info("posted event - " + event)
         pygame.event.post(pygame.event.Event(event))
         
     def run(self):
-        logging.info("starting main loop")
+        log.info("starting main loop")
         while True:
             dt = self.clock.get_time()
             
@@ -112,9 +113,9 @@ class Game(object):
             self.clock.tick(0)
 
     def quit(self):
-        logging.info("running game.quit")
+        log.info("running game.quit")
         pygame.quit()
-        sys.exit(1)
+        sys.exit(0)
 
 class Application(object):
     canvas = None
@@ -123,7 +124,7 @@ class Application(object):
         self._layers = []
         self.layers = {}
 
-        logging.info("initializing application")
+        log.info("initializing application")
         
         self.width, self.height = Application.canvas.get_size()
         self.backgroundsurface = None
@@ -137,7 +138,7 @@ class Application(object):
         return self._layers.index(layer)
 
     def addLayer(self, name, level=0):
-        logging.info("adding new layer '%s' on level %d"%(name,level))
+        log.info("adding new layer '%s' on level %d"%(name,level))
         layer = Layer(name)
         layer.app = self
         self.layers[name] = layer
@@ -148,18 +149,18 @@ class Application(object):
         layer.setLevel(level)
         
     def removeLayer(self, layer):
-        logging.info("removing layer '%s' on level %d"%(layer.name, layer.level))
+        log.info("removing layer '%s' on level %d"%(layer.name, layer.level))
         layer = self.getLayer(layer)
         self._layers.remove(layer)
         del self.layers[layer.name]
         
     def renameLayer(self, layer, name):
-        logging.info("renaming layer '%s' to new name '%s'"%(layer.name,name))
+        log.info("renaming layer '%s' to new name '%s'"%(layer.name,name))
         del self.layers[layer.name]
         self.layers[name] = layer
         
     def moveLayer(self, layer, level):
-        logging.info("moving layer '%s' to level %d"%(layer.name,level))
+        log.info("moving layer '%s' to level %d"%(layer.name,level))
         layer = self.getLayer(layer)
         
         if level < -1:
@@ -183,7 +184,7 @@ class Application(object):
             return None
 
     def addSprite(self, sprite, layer=0):
-        logging.debug("adding sprite to layer %s"%(layer))
+        log.debug("adding sprite to layer %s"%(layer))
         if isinstance(layer, Layer):
             layer.addSprite(sprite)
         elif isinstance(layer, str):
@@ -194,7 +195,7 @@ class Application(object):
             pass
         
     def removeSprite(self, sprite):
-        logging.debug("removing sprite on level %d"%(sprite.layer.level))
+        log.debug("removing sprite on level %d"%(sprite.layer.level))
         self._layers[sprite.layer.level].removeSprite(sprite)
     
     def update(self, dt):
@@ -278,10 +279,10 @@ class Sprite(object):
         self._hidden = hidden
     hidden = property(getHidden, setHidden)
     def hide(self):
-        logging.debug("hiding sprite")
+        log.debug("hiding sprite")
         self.hidden = True
     def unhide(self):
-        logging.debug("unhiding sprite")
+        log.debug("unhiding sprite")
         self.hidden = False
 
     def isActive(self):
@@ -295,12 +296,12 @@ class Sprite(object):
     alpha = property(getAlpha, setAlpha)
 
     def addMotion(self, motion):
-        logging.info("adding motion %s to sprite"%(motion))
+        log.info("adding motion %s to sprite"%(motion))
         self.motions.append(motion)
         motion.sprite = self
         motion.begin(self)
     def removeMotion(self, motion):
-        logging.debug("removing motion %s from sprite"%(motion))
+        log.debug("removing motion %s from sprite"%(motion))
         if isinstance(motion, Action):
             motion.cancel()
             self.motions.remove(motion)
@@ -394,7 +395,7 @@ class Sprite(object):
 class Text(Sprite):
     game = None
     def __init__(self, value, x, y, color, size, font=None):
-        logging.debug("initializing text object of value '%s'"%(value))
+        log.debug("initializing text object of value '%s'"%(value))
         
         # manually set values to avoid problems in auto render
         self._font = font
@@ -444,4 +445,4 @@ class Text(Sprite):
     size = property(getSize, setSize)
 
 if __name__ == "__main__":
-    test()
+    Debug.test(main)

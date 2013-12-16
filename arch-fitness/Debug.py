@@ -3,12 +3,29 @@ import traceback
 import logging
 import sys
 
-def test(main, level=logging.INFO):
-    logging.basicConfig(stream = sys.stderr, filename = "Debug.log",
-                    level = level,
-format = "%(asctime)s | %(levelname)8s |:  %(message)s")
-    logging.info("starting tests")
+level = logging.DEBUG
+
+log = logging.getLogger("root")
+log.setLevel(level)
+
+console = logging.StreamHandler()
+console.setLevel(level)
+
+logfile = logging.FileHandler("debug.log")
+logfile.setLevel(level)
+
+formatter = logging.Formatter(
+    "%(asctime)s | %(levelname)8s | %(name)s |: %(message)s")
+
+console.setFormatter(formatter)
+logfile.setFormatter(formatter)
+
+log.addHandler(console)
+log.addHandler(logfile)
+
+def test(main):
+    log.info("starting tests")
     try:
         main()
     except:
-        logging.critical(traceback.format_exc())
+        log.critical(traceback.format_exc())
