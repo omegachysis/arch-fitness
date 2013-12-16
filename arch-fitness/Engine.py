@@ -6,6 +6,8 @@ from pygame.locals import *
 import pygame.freetype
 import traceback
 
+import Motion
+
 def main():
     game = Game(1280, 720)
     
@@ -14,6 +16,7 @@ def main():
 
     testsurface = pygame.image.load("test.png")
     testSprite = Sprite(testsurface, 250, 250)
+    testSprite.alpha = 255
 
     testApp.addSprite(testSprite, 0) # add to top layer - 0
 
@@ -28,6 +31,8 @@ def main():
     testApp.addLayer("top layer", 0)
 
     testApp.addSprite(testText, "top layer")
+
+    testSprite.addMotion(Motion.looped(Motion.In.Fade(5.0, 255), 1))
     
     game.startApp(testApp)
     game.run()
@@ -149,6 +154,7 @@ class Application(object):
         self._layers[sprite.layer.level].removeSprite(sprite)
     
     def update(self, dt):
+        dt /= 1000.0
         i = len(self._layers)
         while i > 0:
             i -= 1
@@ -208,6 +214,10 @@ class Sprite(object):
         self.x = x
         self.y = y
 
+        self.alpha = 255
+
+        self.hidden = False
+
         self.dx = 0
         self.dy = 0
 
@@ -215,10 +225,50 @@ class Sprite(object):
         # It is assigned when the sprite is added to the draw list.
         self.app = None
         self.layer = None
+
+        self.motions = []
+
+    def getHidden(self):
+        return self._hidden
+    def setHidden(self, hidden):
+        self._hidden = hidden
+    hidden = property(getHidden, setHidden)
+    def hide(self):
+        self.hidden = True
+    def unhide(self):
+        self.hidden = False
+
+    def isActive(self):
+        return (self.app != None)
+    
+    def getAlpha(self):
+        return self._alpha
+    def setAlpha(self, alpha):
+        self._surface.set_alpha(alpha)
+        self._alpha = alpha
+    alpha = property(getAlpha, setAlpha)
+
+    def addMotion(self, motion):
+        self.motions.append(motion)
+        motion.sprite = self
+        motion.begin(self)
+    def removeMotion(self, motion):
+        if isinstance(motion, Motion.Action):
+            motion.cancel()
+            self.motions.remove(motion)
+        elif isinstance(motion, str):
+            for imotion in self.motions:
+                if isinstance(imotion, eval(str)):
+                    imotion.cancel()
+                    self.motions.remove(imotion)
     
     def tick(self, dt):
         self.x += self.dx * dt
         self.y += self.dy * dt
+
+        if self.motions:
+            for motion in self.motions:
+                motion.update(dt)
 
         self.update(dt)
 
@@ -226,7 +276,8 @@ class Sprite(object):
         pass
     
     def draw(self, canvas):
-        canvas.blit(self._surface, self._rect)
+        if not self.hidden:
+            canvas.blit(self._surface, self._rect)
             
     def destroy(self):
         self.app.removeSprite(self)
