@@ -3,9 +3,9 @@ import traceback
 import logging
 import sys
 
-level = logging.DEBUG
+exec(open("debug.cfg").read())
 
-log = logging.getLogger("root")
+log = logging.getLogger("R") # "R" stands for 'root'
 log.setLevel(level)
 
 console = logging.StreamHandler()

@@ -1,5 +1,9 @@
 from Motion.Action import Action
 
+import logging
+
+log = logging.getLogger("R.Engine.Motion")
+
 class Appear(Action):
     name = "in.appear"
     def __init__(self, sprite):
@@ -19,11 +23,13 @@ class Fade(Action):
         super(Fade, self).__init__()
 
     def begin(self, sprite):
+        log.debug("Fade.begin")
         self.x = 0.0
         sprite.alpha = 0.0
         sprite.unhide()
 
     def cancel(self):
+        log.debug("Fade.cancel")
         self.sprite.alpha = self.alpha
         super(Fade, self).cancel()
         

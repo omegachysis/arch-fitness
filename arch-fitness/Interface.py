@@ -6,7 +6,7 @@ import logging
 
 import Engine
 
-log = logging.getLogger("root.interface")
+log = logging.getLogger("R.Interface")
 
 def main():
     game = Engine.Game(1280, 720)

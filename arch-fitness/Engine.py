@@ -10,10 +10,9 @@ import logging
 from Motion.Action import Action
 
 import Debug
-    
-log = logging.getLogger("root.engine")
-
 import Interface
+
+log = logging.getLogger("R.Engine")
 
 def main():
     import Motion
@@ -31,6 +30,14 @@ def main():
 
     testText = Text("Hello World!", 200, 100, (255,255,255,255),
                     50, "consola.ttf")
+
+    exitButton = Interface.SolidButton(400, 200, 50, 50,
+                             (255,0,0,255), (255,0,255,255), (0,255,0,255),
+                             game.quit)
+
+    exitButton.text = Text("X", 50, 50, (255,255,255,255), 50, "consola.ttf")
+
+    testApp.addSprite(exitButton)
 
     testApp.addSprite(testText, "default") # add to default layer
 
