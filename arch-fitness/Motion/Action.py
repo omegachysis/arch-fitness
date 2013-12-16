@@ -1,5 +1,6 @@
 
 class Action(object):
+    name = "action"
     def __init__(self):
         self.loop = 1
     def begin(self, sprite):

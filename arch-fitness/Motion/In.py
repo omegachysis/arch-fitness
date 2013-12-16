@@ -1,6 +1,7 @@
 from Motion.Action import Action
 
 class Appear(Action):
+    name = "in.appear"
     def __init__(self, sprite):
         super(Fade, self).__init__()
         
@@ -9,6 +10,7 @@ class Appear(Action):
         self.finish()
 
 class Fade(Action):
+    name = "in.fade"
     def __init__(self, time, alpha):
         self.time = time
         self.alpha = alpha
@@ -23,7 +25,6 @@ class Fade(Action):
 
     def cancel(self):
         self.sprite.alpha = self.alpha
-        self.finish()
         
     def update(self, dt):
         self.x += dt

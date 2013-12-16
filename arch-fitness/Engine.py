@@ -6,16 +6,18 @@ from pygame.locals import *
 import pygame.freetype
 import traceback
 
-import Motion
+from Motion.Action import Action
 
 def main():
+    import Motion
+    
     game = Game(1280, 720)
     
     testApp = Application()
     testApp.backgroundColor = (0, 0, 50, 255)
 
     testsurface = pygame.image.load("test.png")
-    testSprite = Sprite(testsurface, 250, 250)
+    testSprite = Sprite(testsurface.convert(), 250, 250)
     testSprite.alpha = 255
 
     testApp.addSprite(testSprite, 0) # add to top layer - 0
@@ -33,6 +35,30 @@ def main():
     testApp.addSprite(testText, "top layer")
 
     testSprite.addMotion(Motion.looped(Motion.In.Fade(5.0, 255), 1))
+
+    #---------------------------------------
+    import Interface
+
+    global subjectSprite
+    global subjectMotion
+
+    subjectSprite = Sprite(testsurface.convert(), 500, 500)
+    testApp.addSprite(subjectSprite)
+
+    def start():
+        subjectSprite.addMotion(Motion.looped(Motion.In.Fade(4.0, 255), 0))
+    def stop():
+        subjectSprite.removeMotion("in.fade")
+
+    startButton = Interface.SolidButton(400, 600, 100, 50,
+                              (0,255,0,255), (50,255,50,255), (100,255,100,255),
+                              start)
+    stopButton = Interface.SolidButton(600, 600, 100, 50,
+                             (255,0,0,255), (255,50,50,255), (255,100,100,255),
+                             stop)
+
+    testApp.addSprite(startButton)
+    testApp.addSprite(stopButton)
     
     game.startApp(testApp)
     game.run()
@@ -253,12 +279,12 @@ class Sprite(object):
         motion.sprite = self
         motion.begin(self)
     def removeMotion(self, motion):
-        if isinstance(motion, Motion.Action):
+        if isinstance(motion, Action):
             motion.cancel()
             self.motions.remove(motion)
         elif isinstance(motion, str):
             for imotion in self.motions:
-                if isinstance(imotion, eval(str)):
+                if imotion.name == motion.lower():
                     imotion.cancel()
                     self.motions.remove(imotion)
     
