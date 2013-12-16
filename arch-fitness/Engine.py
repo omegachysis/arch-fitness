@@ -15,12 +15,19 @@ def main():
     testsurface = pygame.image.load("test.png")
     testSprite = Sprite(testsurface, 250, 250)
 
-    testApp.addSprite(testSprite)
+    testApp.addSprite(testSprite, 0) # add to top layer - 0
 
     testText = Text("Hello World!", 200, 100, (255,255,255,255),
                     50, "consola.ttf")
 
-    testApp.addSprite(testText)
+    testApp.addSprite(testText, "default") # add to default layer
+
+    testText = Text("Hello World!", 200, 200, (255,255,255,255),
+                    50, "consola.ttf")
+
+    testApp.addLayer("top layer", 0)
+
+    testApp.addSprite(testText, "top layer")
     
     game.startApp(testApp)
     game.run()
@@ -86,25 +93,37 @@ class Application(object):
     def getLayerlevel(self, layer):
         return self._layers.index(layer)
 
-    def addLayer(self, name):
+    def addLayer(self, name, level=0):
         layer = Layer(name)
         layer.app = self
         self.layers[name] = layer
         self._layers.append(layer)
+        layer.level = len(self.layers) - 1
+        # by default, new layers are created on top.
+        # smaller level values mean higher up (cannot be negative)
+        layer.setLevel(level)
+        
     def removeLayer(self, layer):
         layer = self.getLayer(layer)
         self._layers.remove(layer)
         del self.layers[layer.name]
+        
     def renameLayer(self, layer, name):
         del self.layers[layer.name]
         self.layers[name] = layer
         
     def moveLayer(self, layer, level):
-        self.removeLayer(layer)
-        if level == len(self._layers) - 1:
+        layer = self.getLayer(layer)
+        
+        if level < -1:
+            level = len(self._layers) - level
+        
+        if level >= len(self._layers) or level == -1:
             self._layers.append(layer)
         else:
-            self._layers = self._layers[:level] + [layer] + self._layers[level+1:]
+            self._layers = self._layers[:level] + [layer] + self._layers[level:]
+            
+        self.layers[layer.name] = layer
 
     def getLayer(self, layer):
         if isinstance(layer, Layer):
@@ -130,8 +149,10 @@ class Application(object):
         self._layers[sprite.layer.level].removeSprite(sprite)
     
     def update(self, dt):
-        for layer in self._layers:
-            layer.update(dt)
+        i = len(self._layers)
+        while i > 0:
+            i -= 1
+            self._layers[i].update(dt)
                 
     def draw(self):
         if self.backgroundsurface:
@@ -139,8 +160,10 @@ class Application(object):
         elif self.backgroundColor:
             self.canvas.fill(self.backgroundColor)
         
-        for layer in self._layers:
-            layer.draw(Application.canvas)
+        i = len(self._layers)
+        while i > 0:
+            i -= 1
+            self._layers[i].draw(Application.canvas)
 
 class Layer(object):
     def __init__(self, name):
@@ -148,12 +171,12 @@ class Layer(object):
         self._name = name
         self.app = None
 
-    def getlevel(self):
+    def getLevel(self):
         return self.app.getLayerlevel(self)
-    def setlevel(self, level):
-        if level != self.getlevel():
+    def setLevel(self, level):
+        if level != self.getLevel():
             self.app.moveLayer(self, level)
-    level = property(getlevel, setlevel)
+    level = property(getLevel, setLevel)
 
     def getName(self):
         return self._name
