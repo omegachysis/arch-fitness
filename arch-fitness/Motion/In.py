@@ -7,7 +7,7 @@ log = logging.getLogger("R.Engine.Motion")
 class Appear(Action):
     name = "in.appear"
     def __init__(self, sprite):
-        super(Fade, self).__init__()
+        super(Appear, self).__init__()
         
     def update(self, dt):
         self.sprite.unhide()

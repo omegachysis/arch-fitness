@@ -1,2 +1,4 @@
 
 - Make it more limited to stack various of the same type of motion effect.  This leads to weird amounts of function calls
+
+- out.fade effect needs finishing (notes are on stat packet)
