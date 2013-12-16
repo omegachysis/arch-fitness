@@ -9,6 +9,10 @@ import logging
 
 from Motion.Action import Action
 
+def test():
+    import Debug
+    Debug.test(main, logging.DEBUG)
+
 def main():
     import Motion
 
@@ -67,7 +71,7 @@ def main():
 class Game(object):
     
     def __init__(self, width, height):
-        logging.info("starting engine")
+        logging.info("initializing game engine")
         
         pygame.init()
         
@@ -85,9 +89,11 @@ class Game(object):
         self.app = application
 
     def postEvent(self, event):
+        logging.info("posted event - " + event)
         pygame.event.post(pygame.event.Event(event))
         
     def run(self):
+        logging.info("starting main loop")
         while True:
             dt = self.clock.get_time()
             
@@ -106,6 +112,7 @@ class Game(object):
             self.clock.tick(0)
 
     def quit(self):
+        logging.info("running game.quit")
         pygame.quit()
         sys.exit(1)
 
@@ -115,6 +122,8 @@ class Application(object):
     def __init__(self):
         self._layers = []
         self.layers = {}
+
+        logging.info("initializing application")
         
         self.width, self.height = Application.canvas.get_size()
         self.backgroundsurface = None
@@ -128,6 +137,7 @@ class Application(object):
         return self._layers.index(layer)
 
     def addLayer(self, name, level=0):
+        logging.info("adding new layer '%s' on level %d"%(name,level))
         layer = Layer(name)
         layer.app = self
         self.layers[name] = layer
@@ -138,15 +148,18 @@ class Application(object):
         layer.setLevel(level)
         
     def removeLayer(self, layer):
+        logging.info("removing layer '%s' on level %d"%(layer.name, layer.level))
         layer = self.getLayer(layer)
         self._layers.remove(layer)
         del self.layers[layer.name]
         
     def renameLayer(self, layer, name):
+        logging.info("renaming layer '%s' to new name '%s'"%(layer.name,name))
         del self.layers[layer.name]
         self.layers[name] = layer
         
     def moveLayer(self, layer, level):
+        logging.info("moving layer '%s' to level %d"%(layer.name,level))
         layer = self.getLayer(layer)
         
         if level < -1:
@@ -170,6 +183,7 @@ class Application(object):
             return None
 
     def addSprite(self, sprite, layer=0):
+        logging.debug("adding sprite to layer %s"%(layer))
         if isinstance(layer, Layer):
             layer.addSprite(sprite)
         elif isinstance(layer, str):
@@ -180,6 +194,7 @@ class Application(object):
             pass
         
     def removeSprite(self, sprite):
+        logging.debug("removing sprite on level %d"%(sprite.layer.level))
         self._layers[sprite.layer.level].removeSprite(sprite)
     
     def update(self, dt):
@@ -263,8 +278,10 @@ class Sprite(object):
         self._hidden = hidden
     hidden = property(getHidden, setHidden)
     def hide(self):
+        logging.debug("hiding sprite")
         self.hidden = True
     def unhide(self):
+        logging.debug("unhiding sprite")
         self.hidden = False
 
     def isActive(self):
@@ -278,16 +295,16 @@ class Sprite(object):
     alpha = property(getAlpha, setAlpha)
 
     def addMotion(self, motion):
+        logging.info("adding motion %s to sprite"%(motion))
         self.motions.append(motion)
         motion.sprite = self
         motion.begin(self)
     def removeMotion(self, motion):
+        logging.debug("removing motion %s from sprite"%(motion))
         if isinstance(motion, Action):
             motion.cancel()
             self.motions.remove(motion)
         elif isinstance(motion, str):
-            for imotion in self.motions:
-                print (imotion)
             for imotion in self.motions:
                 if imotion.name == motion.lower():
                     imotion.cancel()
@@ -377,6 +394,8 @@ class Sprite(object):
 class Text(Sprite):
     game = None
     def __init__(self, value, x, y, color, size, font=None):
+        logging.debug("initializing text object of value '%s'"%(value))
+        
         # manually set values to avoid problems in auto render
         self._font = font
         self._value = value
@@ -425,5 +444,4 @@ class Text(Sprite):
     size = property(getSize, setSize)
 
 if __name__ == "__main__":
-    import Debug
-    Debug.test(main)
+    test()

@@ -1,9 +1,11 @@
 
 import traceback
 import logging
+import sys
 
-def test(main):
-    logging.basicConfig(filename = "Engine.log", level = logging.DEBUG,
+def test(main, level=logging.INFO):
+    logging.basicConfig(stream = sys.stderr, filename = "Debug.log",
+                    level = level,
 format = "%(asctime)s | %(levelname)8s |:  %(message)s")
     logging.info("starting tests")
     try:
