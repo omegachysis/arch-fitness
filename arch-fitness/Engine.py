@@ -284,9 +284,11 @@ class Sprite(object):
             self.motions.remove(motion)
         elif isinstance(motion, str):
             for imotion in self.motions:
+                print (imotion)
+            for imotion in self.motions:
                 if imotion.name == motion.lower():
                     imotion.cancel()
-                    self.motions.remove(imotion)
+            self.motions = [imotion for imotion in self.motions if not imotion.canceled]
     
     def tick(self, dt):
         self.x += self.dx * dt

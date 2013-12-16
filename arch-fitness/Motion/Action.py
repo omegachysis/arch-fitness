@@ -1,12 +1,12 @@
 
 class Action(object):
-    name = "action"
     def __init__(self):
         self.loop = 1
+        self.canceled = False
     def begin(self, sprite):
         pass
     def cancel(self):
-        pass
+        self.canceled = True
     def finish(self):
         self.loop -= 1
         if self.loop:
