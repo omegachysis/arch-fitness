@@ -5,12 +5,13 @@ import sys
 from pygame.locals import *
 import pygame.freetype
 import traceback
+import logging
 
 from Motion.Action import Action
 
 def main():
     import Motion
-    
+
     game = Game(1280, 720)
     
     testApp = Application()
@@ -66,6 +67,8 @@ def main():
 class Game(object):
     
     def __init__(self, width, height):
+        logging.info("starting engine")
+        
         pygame.init()
         
         self.canvas = pygame.display.set_mode((width, height))
@@ -104,7 +107,7 @@ class Game(object):
 
     def quit(self):
         pygame.quit()
-        sys.exit()
+        sys.exit(1)
 
 class Application(object):
     canvas = None
