@@ -3,9 +3,9 @@ By default, you are in the operating environment of the GameConsole object.
 
 Begin your commands with a question mark '?' to automatically receive output from your response:
 
-? 6 + 8
-? isEnv(self.game)
-? self.blacklistedSources
+?6 + 8
+?isEnv(self.game)
+?self.blacklistedSources
 
 You can change the operating environment by using the env variable:
 
@@ -16,13 +16,13 @@ this command because it belongs to the GameConsole class!  If you want to use a 
 like you are in the default operating environment (GameConsole), begin your commands with a 
 pound sign:
 
-# self.env = self
-# self.resetEnv()
-# print(self.game.app)
+#self.env = self
+#self.resetEnv()
+#print(self.game.app)
 
 You can even chain this two command symbols together, using the pound sign first like so:
 
-#? self.env
-#? self.game.app
+#?self.env
+#?self.game.app
 
 Check the GameConsole class for commands!  The only limit is python!
