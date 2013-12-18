@@ -81,11 +81,14 @@ class GameConsole(object):
             if ",".join(testing) in GameConsole.blacklistedSources:
                 return True
         return False
+    def isEnvironment(self, environment):
+        return hasattr(environment, 'execute')
+    isEnv = isEnvironment
 
     def getEnvironment(self):
         return self._environment
     def setEnvironment(self, environment):
-        if hasattr(environment, 'execute'):
+        if self.isEnv(environment):
             self._environment = environment
         else:
             log.error("(execute) " + str(environment) + " is not an environment.")
@@ -101,11 +104,20 @@ class GameConsole(object):
         try:
             if self.env == self or command[0] == "#":
                 if command[0] == "#":
-                    exec(command[1:])
+                    if command[1] == "?":
+                        exec("print(" + command[2:] + ")")
+                    else:
+                        exec(command[1:])
                 else:
-                    exec(command)
+                    if command[0] == "?":
+                        exec("print(" + command[1:] + ")")
+                    else:
+                        exec(command)
             else:
-                self.env.execute(command)
+                if command[0] == "?":
+                    self.env.execute("print(" + command[1:] + ")")
+                else:
+                    self.env.execute(command)
         except:
             log.error("(execute) " + traceback.format_exc())
 
