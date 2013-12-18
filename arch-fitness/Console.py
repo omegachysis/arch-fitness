@@ -4,6 +4,8 @@ import logging
 import traceback
 import sys
 
+from pygame.locals import *
+
 log = logging.getLogger("R.Console")
 
 class ConsoleSTDOUT(object):
@@ -21,6 +23,7 @@ class GameConsole(object):
     READING_BUFFER = 50
     ENTRY_BUFFER = 15
     BUFFER_LEFT = 15
+    DARKEN_WIDTH = .80
     
     def __init__(self, game, level=logging.INFO):
         sys.stdout = ConsoleSTDOUT(self)
@@ -30,12 +33,19 @@ class GameConsole(object):
         self.messages = []
         self.game = game
         self.hidden = True
-        self.environment = self
+        self.env = self
         self.stream = ""
         self.entry = ""
 
         self._entrySurface = None
         self._entryRect = None
+
+        self._consoleSurface = pygame.Surface(
+            (GameConsole.DARKEN_WIDTH*game.width, game.height)
+            )
+        self._consoleSurface.fill((0,0,0))
+        self._consoleSurface.set_alpha(200)
+        self._consoleSurface = self._consoleSurface.convert_alpha()
 
         self.font = pygame.freetype.Font("consola.ttf",
                                          ptsize = 12)
@@ -52,20 +62,34 @@ class GameConsole(object):
         exec(open("gameConsole.cfg", 'r').read())
 
         for blacklistedSource in GameConsole.blacklistSources:
-            log.info("Blacklisting " + blacklistedSource)
+            log.info("blacklisting " + blacklistedSource)
 
+    def getEnvironment(self):
+        return self._environment
     def setEnvironment(self, environment):
-        self.environment = environment
+        if hasattr(environment, 'execute'):
+            self._environment = environment
+        else:
+            log.error("(execute) " + str(environment) + " is not an environment.")
+    env = property(getEnvironment, setEnvironment)
+    environment = property(getEnvironment, setEnvironment)
+
+    def interpretCode(self, command):
+        if "#!resetEnvironment()" in command:
+            self.env = self
 
     def execute(self, command):
         log.info("(execute) " + command)
-        try:
-            if self.environment == self:
-                exec(command)
-            else:
-                self.environment.execute(command)
-        except:
-            log.error("(execute) " + traceback.format_exc())
+        if "#!" in command:
+            self.interpretCode(command)
+        else:
+            try:
+                if self.env == self:
+                    exec(command)
+                else:
+                    self.env.execute(command)
+            except:
+                log.error("(execute) " + traceback.format_exc())
 
     def executeEntry(self):
         self.execute(self.entry)
@@ -89,19 +113,22 @@ class GameConsole(object):
 
     def renderMessage(self, stream):
         log.debug("!@ rendering message stream: " + stream)
-        levelname, source, message = stream.split(" ; ")
-        if source not in self.blacklistSources:
-            color = {"DEBUG":(150,150,150,100),"INFO":(100,100,255,200),
-                     "WARNING":(255,255,50,220),"ERROR":(255,20,20,255),
-                     "CRITICAL":(255,20,20,255)}[levelname]
+        try:
+            levelname, source, message = stream.split(" ; ")
+            if source not in self.blacklistSources:
+                color = {"DEBUG":(150,150,150,255),"INFO":(100,100,255,255),
+                         "WARNING":(255,255,50,255),"ERROR":(255,20,20,255),
+                         "CRITICAL":(255,20,20,255)}[levelname]
 
-            multiline = message.split("\n")
+                multiline = message.split("\n")
 
-            for msg in multiline:
-                surface, rect = self.font.render(msg, color)
-                self.messages.append([surface,rect])
+                for msg in multiline:
+                    surface, rect = self.font.render(msg, color)
+                    self.messages.append([surface,rect])
 
-            self._recalculateCoordinates()
+                self._recalculateCoordinates()
+        except:
+            log.error("!@ error rendering last stream")
 
     def _recalculateCoordinates(self):
         i = len(self.messages)
@@ -113,6 +140,7 @@ class GameConsole(object):
             message[1].left = GameConsole.BUFFER_LEFT
 
     def draw(self, canvas):
+        canvas.blit(self._consoleSurface, (0,0))
         canvas.blit(self._entrySurface, self._entryRect)
         for message in self.messages:
             canvas.blit(message[0], message[1])
