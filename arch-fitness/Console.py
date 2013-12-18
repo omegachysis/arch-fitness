@@ -61,8 +61,26 @@ class GameConsole(object):
 
         exec(open("gameConsole.cfg", 'r').read())
 
-        for blacklistedSource in GameConsole.blacklistSources:
-            log.info("blacklisting " + blacklistedSource)
+        for blacklistedSource in GameConsole.blacklistedSources:
+            self.blacklistSource(blacklistedSource)
+
+    def resetConfiguration(self):
+        exec(open("gameConsole.cfg", 'r').read())
+
+    def blacklistSource(self, source):
+        log.info("blacklisting " + source)
+        if source not in GameConsole.blacklistedSources:
+            GameConsole.blacklistedSources.append(source)
+
+    def isSourceBlacklisted(self, source):
+        components = source.split(".")
+        i = 0
+        for component in components:
+            i += 1
+            testing = components[:i]
+            if ",".join(testing) in GameConsole.blacklistedSources:
+                return True
+        return False
 
     def getEnvironment(self):
         return self._environment
@@ -73,6 +91,10 @@ class GameConsole(object):
             log.error("(execute) " + str(environment) + " is not an environment.")
     env = property(getEnvironment, setEnvironment)
     environment = property(getEnvironment, setEnvironment)
+    def resetEnvironment(self):
+        self.env = self
+    def resetEnv(self):
+        self.env = self
 
     def execute(self, command):
         log.info("(execute) " + command)
@@ -108,10 +130,10 @@ class GameConsole(object):
         self._entryRect = rect
 
     def renderMessage(self, stream):
-        log.debug("!@ rendering message stream: " + stream)
+        #log.debug("!@ rendering message stream: " + stream)
         try:
             levelname, source, message = stream.split(" ; ")
-            if source not in self.blacklistSources:
+            if not self.isSourceBlacklisted(source):
                 color = {"DEBUG":(150,150,150,255),"INFO":(100,100,255,255),
                          "WARNING":(255,255,50,255),"ERROR":(255,20,20,255),
                          "CRITICAL":(255,20,20,255)}[levelname]
@@ -124,7 +146,8 @@ class GameConsole(object):
 
                 self._recalculateCoordinates()
         except:
-            log.error("!@ error rendering last stream")
+            log.error("!@ error rendering last stream" +\
+                      traceback.format_exc())
 
     def _recalculateCoordinates(self):
         i = len(self.messages)
