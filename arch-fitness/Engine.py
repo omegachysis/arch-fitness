@@ -98,6 +98,9 @@ class Game(object):
         Sprite.game = self
 
         self.app = None
+
+    def execute(self, command):
+        exec(command)
         
     def startApp(self, application):
         self.app = application
@@ -125,6 +128,15 @@ class Game(object):
                         self.postEvent(QUIT)
                     elif event.key == K_BACKQUOTE:
                         self.gameConsole.toggleHidden()
+                    elif event.key == K_RETURN:
+                        if not self.gameConsole.hidden:
+                            self.gameConsole.executeEntry()
+                    elif event.key == K_BACKSPACE:
+                        if not self.gameConsole.hidden:
+                            self.gameConsole.entryBackspace()
+                    else:
+                        if not self.gameConsole.hidden:
+                            self.gameConsole.entryAdd(event.unicode)
 
             pygame.display.update()
             self.clock.tick(0)
@@ -150,6 +162,9 @@ class Application(object):
         self.canvas = Application.canvas
 
         self.addLayer("default")
+
+    def execute(self, command):
+        exec(command)
 
     def getLayerlevel(self, layer):
         return self._layers.index(layer)
@@ -289,6 +304,9 @@ class Sprite(object):
         self.layer = None
 
         self.motions = []
+
+    def execute(self, command):
+        exec(command)
 
     def getHidden(self):
         return self._hidden
