@@ -11,6 +11,7 @@ from Motion.Action import Action
 
 import Debug
 import Interface
+import Console
 
 log = logging.getLogger("R.Engine")
 
@@ -59,7 +60,7 @@ def main():
     testApp.addSprite(subjectSprite)
 
     def start():
-        subjectSprite.addMotion(Motion.looped(Motion.In.Fade(4.0, 255), 0))
+        Motion.looped(Motion.In.Fade(subjectSprite, 4.0, 255), 0)
     def stop():
         subjectSprite.removeMotion("in.fade")
 
@@ -80,12 +81,17 @@ class Game(object):
     
     def __init__(self, width, height):
         log.info("initializing game engine")
+
+        self.width = width
+        self.height = height
         
         pygame.init()
         
         self.canvas = pygame.display.set_mode((width, height))
         pygame.display.set_caption("My Game")
         self.clock = pygame.time.Clock()
+
+        self.gameConsole = Console.GameConsole(self, logging.DEBUG)
 
         Application.canvas = self.canvas
         Application.game = self
@@ -107,7 +113,10 @@ class Game(object):
             
             if self.app:
                 self.app.update(dt)
+                self.gameConsole.update(dt)
+            if self.app:
                 self.app.draw()
+                self.gameConsole.draw(self.canvas)
 
             for event in pygame.event.get():
                 if event.type == QUIT:

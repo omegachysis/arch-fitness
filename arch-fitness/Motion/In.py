@@ -29,10 +29,6 @@ class Fade(Action):
         self.x = 0.0
         self.sprite.alpha = 0.0
         self.sprite.unhide()
-
-    def cancel(self):
-        self.sprite.alpha = self.alpha
-        super(Fade, self).cancel()
         
     def update(self, dt):
         self.x += dt
@@ -41,3 +37,7 @@ class Fade(Action):
             self.finish()
         else:
             self.sprite.alpha = self.m * self.x
+
+    def cancel(self):
+        self.sprite.alpha = self.alpha
+        super(Fade, self).cancel()

@@ -2,6 +2,7 @@
 class Action(object):
     def __init__(self, sprite):
         self.loop = 1
+        self.canceled = False
         self.sprite = sprite
         sprite.addMotion(self)
         
@@ -19,4 +20,4 @@ class Action(object):
             self.sprite.removeMotion(self)
 
     def cancel(self):
-        pass
+        self.canceled = True
