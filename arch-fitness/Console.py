@@ -74,22 +74,18 @@ class GameConsole(object):
     env = property(getEnvironment, setEnvironment)
     environment = property(getEnvironment, setEnvironment)
 
-    def interpretCode(self, command):
-        if "#!resetEnvironment()" in command:
-            self.env = self
-
     def execute(self, command):
         log.info("(execute) " + command)
-        if "#!" in command:
-            self.interpretCode(command)
-        else:
-            try:
-                if self.env == self:
-                    exec(command)
+        try:
+            if self.env == self or command[0] == "#":
+                if command[0] == "#":
+                    exec(command[1:])
                 else:
-                    self.env.execute(command)
-            except:
-                log.error("(execute) " + traceback.format_exc())
+                    exec(command)
+            else:
+                self.env.execute(command)
+        except:
+            log.error("(execute) " + traceback.format_exc())
 
     def executeEntry(self):
         self.execute(self.entry)
