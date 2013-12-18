@@ -113,9 +113,8 @@ class Game(object):
             
             if self.app:
                 self.app.update(dt)
-                self.gameConsole.update(dt)
-            if self.app:
                 self.app.draw()
+            if not self.gameConsole.hidden:
                 self.gameConsole.draw(self.canvas)
 
             for event in pygame.event.get():
@@ -124,6 +123,8 @@ class Game(object):
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.postEvent(QUIT)
+                    elif event.key == K_BACKQUOTE:
+                        self.gameConsole.toggleHidden()
 
             pygame.display.update()
             self.clock.tick(0)

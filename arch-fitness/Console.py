@@ -14,6 +14,8 @@ class GameConsole(object):
 
         self.game = game
 
+        self.hidden = True
+
         self.stream = ""
 
         self.font = pygame.freetype.Font("consola.ttf",
@@ -30,6 +32,13 @@ class GameConsole(object):
 
         for blacklistedSource in GameConsole.blacklistSources:
             log.info("Blacklisting " + blacklistedSource)
+
+    def hide(self):
+        self.hidden = True
+    def unhide(self):
+        self.hidden = False
+    def toggleHidden(self):
+        self.hidden = not self.hidden
 
     def renderMessage(self, stream):
         levelname, source, message = stream.split(" ; ")
