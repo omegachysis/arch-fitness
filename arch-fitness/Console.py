@@ -26,15 +26,21 @@ class GameConsole(object):
         handler.setFormatter(formatter)
         rootLogger.addHandler(handler)
 
+        exec(open("gameConsole.cfg", 'r').read())
+
+        for blacklistedSource in GameConsole.blacklistSources:
+            log.info("Blacklisting " + blacklistedSource)
+
     def renderMessage(self, stream):
         levelname, source, message = stream.split(" ; ")
-        color = {"DEBUG":(150,150,150,100),"INFO":(100,100,255,200),
-                 "WARNING":(255,255,50,220),"ERROR":(10,10,255,255),
-                 "CRITICAL":(10,10,255,255)}[levelname]
-        
-        surface, rect = self.font.render(message, color)
-        self.messages.append([surface,rect])
-        self._recalculateCoordinates()
+        if source not in self.blacklistSources:
+            color = {"DEBUG":(150,150,150,100),"INFO":(100,100,255,200),
+                     "WARNING":(255,255,50,220),"ERROR":(255,50,50,255),
+                     "CRITICAL":(10,10,255,255)}[levelname]
+            
+            surface, rect = self.font.render(message, color)
+            self.messages.append([surface,rect])
+            self._recalculateCoordinates()
 
     def _recalculateCoordinates(self):
         i = len(self.messages)
