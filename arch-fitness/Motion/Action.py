@@ -1,17 +1,22 @@
 
 class Action(object):
-    def __init__(self):
+    def __init__(self, sprite):
         self.loop = 1
-        self.canceled = False
-    def begin(self, sprite):
+        self.sprite = sprite
+        sprite.addMotion(self)
+        
+    def begin(self):
         pass
-    def cancel(self):
-        self.canceled = True
+    
+    def update(self, dt):
+        pass
+    
     def finish(self):
         self.loop -= 1
         if self.loop:
-            self.begin(self.sprite)
+            self.begin()
         else:
             self.sprite.removeMotion(self)
-    def update(self, dt):
+
+    def cancel(self):
         pass

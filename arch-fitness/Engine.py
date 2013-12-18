@@ -48,7 +48,7 @@ def main():
 
     testApp.addSprite(testText, "top layer")
 
-    testSprite.addMotion(Motion.looped(Motion.In.Fade(5.0, 255), 1))
+    newMotion = Motion.looped(Motion.In.Fade(testSprite, 5.0, 255), 0)
 
     #---------------------------------------
 
@@ -305,8 +305,8 @@ class Sprite(object):
     def addMotion(self, motion):
         log.info("adding motion %s to sprite"%(motion))
         self.motions.append(motion)
-        motion.sprite = self
-        motion.begin(self)
+        motion.begin()
+
     def removeMotion(self, motion):
         log.debug("removing motion %s from sprite"%(motion))
         if isinstance(motion, Action):
