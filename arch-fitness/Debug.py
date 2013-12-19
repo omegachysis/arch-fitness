@@ -14,18 +14,19 @@
 
 import traceback
 import logging
+from logging import *
 import sys
 
 exec(open("debug.cfg").read())
 
 log = logging.getLogger("R") # "R" stands for 'root'
-log.setLevel(level)
+log.setLevel(logging.DEBUG)
 
 console = logging.StreamHandler()
-console.setLevel(level)
+console.setLevel(levelSystemConsole)
 
 logfile = logging.FileHandler("debug.log")
-logfile.setLevel(level)
+logfile.setLevel(levelLogFile)
 
 formatter = logging.Formatter(
     "%(asctime)s | %(levelname)8s | %(name)s |: %(message)s")

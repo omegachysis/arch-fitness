@@ -32,7 +32,7 @@ log = logging.getLogger("R.Engine")
 def main():
     import Motion
 
-    game = Game(1280, 720)
+    game = Game(1024, 600, True)
     
     testApp = Application()
     testApp.backgroundColor = (0, 0, 50, 255)
@@ -93,7 +93,7 @@ def main():
 
 class Game(object):
     
-    def __init__(self, width, height):
+    def __init__(self, width, height, fullscreen=False):
         log.info("initializing game engine")
 
         self.width = width
@@ -101,17 +101,25 @@ class Game(object):
         
         pygame.init()
         
-        self.canvas = pygame.display.set_mode((width, height))
+        if fullscreen:
+            self.canvas = pygame.display.set_mode((width, height), FULLSCREEN)
+        else:
+            self.canvas = pygame.display.set_mode((width, height))
         pygame.display.set_caption("My Game")
         self.clock = pygame.time.Clock()
 
-        self.gameConsole = Console.GameConsole(self, logging.DEBUG)
+        self.gameConsole = Console.GameConsole(self, Debug.levelGameConsole)
 
         Application.canvas = self.canvas
         Application.game = self
         Sprite.game = self
 
         self.app = None
+
+    def xpos(self, proportion):
+        return self.width * proportion
+    def ypos(self, proportion):
+        return self.height * proportion
 
     def execute(self, command):
         exec(command)
@@ -301,6 +309,8 @@ class Layer(object):
 class Sprite(object):
     game = None
     def __init__(self, surface, x, y):
+        self.log = logging.getLogger("R.Engine.Sprite")
+        
         self.surface = surface
         self.x = x
         self.y = y
@@ -328,10 +338,10 @@ class Sprite(object):
         self._hidden = hidden
     hidden = property(getHidden, setHidden)
     def hide(self):
-        log.debug("hiding sprite")
+        self.log.debug("hiding sprite")
         self.hidden = True
     def unhide(self):
-        log.debug("unhiding sprite")
+        self.log.debug("unhiding sprite")
         self.hidden = False
 
     def isActive(self):
@@ -345,12 +355,12 @@ class Sprite(object):
     alpha = property(getAlpha, setAlpha)
 
     def addMotion(self, motion):
-        log.info("adding motion %s to sprite"%(motion))
+        self.log.info("adding motion %s to sprite"%(motion))
         self.motions.append(motion)
         motion.begin()
 
     def removeMotion(self, motion):
-        log.debug("removing motion %s from sprite"%(motion))
+        self.log.debug("removing motion %s from sprite"%(motion))
         if isinstance(motion, Action):
             motion.cancel()
             self.motions.remove(motion)

@@ -31,17 +31,43 @@ class ConsoleSTDOUT(object):
             self.gameConsole.write(stream)
             self.gameConsole.flush()
 
+def splitLine(string, overflow=70):
+    w=[]
+    n=len(string)
+    for i in range(0,n,overflow):
+        w.append(string[i:i+overflow])
+    return w
+def lightenColor(color, value):
+    r, g, b, a = color
+    r += value
+    g += value
+    b += value
+    a = 255
+    if r > 255:
+        r = 255
+    if g > 255:
+        g = 255
+    if b > 255:
+        b = 255
+    return (r,g,b,a)
+
 class GameConsole(object):
     MESSAGE_HEIGHT = 15
     READING_BUFFER = 50
     ENTRY_BUFFER = 15
     BUFFER_LEFT = 15
-    DARKEN_WIDTH = .80
+    DARKEN_WIDTH = .80 # percent of screen width
+    TEXT_OVERFLOW = 80 # characters at 1280 px width
+    SOURCE_BUFFER = 25 # characters to space after log source
+    MESSAGE_BUFFER_LENGTH = 40 # messages to render before deleting
     
     def __init__(self, game, level=logging.INFO):
         sys.stdout = ConsoleSTDOUT(self)
         
         rootLogger = logging.getLogger("R")
+
+        GameConsole.TEXT_OVERFLOW = int(
+            GameConsole.TEXT_OVERFLOW * float(game.width) / 1280.0)
         
         self.messages = []
         self.game = game
@@ -49,6 +75,8 @@ class GameConsole(object):
         self.env = self
         self.stream = ""
         self.entry = ""
+
+        self._everyOtherLine = -1
 
         self._entrySurface = None
         self._entryRect = None
@@ -72,13 +100,13 @@ class GameConsole(object):
         handler.setFormatter(formatter)
         rootLogger.addHandler(handler)
 
-        exec(open("gameConsole.cfg", 'r').read())
+        self.resetConfiguration()
 
         for blacklistedSource in GameConsole.blacklistedSources:
             self.blacklistSource(blacklistedSource)
 
     def resetConfiguration(self):
-        exec(open("gameConsole.cfg", 'r').read())
+        exec(open("console.cfg", 'r').read())
 
     def blacklistSource(self, source):
         log.info("blacklisting " + source)
@@ -91,7 +119,7 @@ class GameConsole(object):
         for component in components:
             i += 1
             testing = components[:i]
-            if ",".join(testing) in GameConsole.blacklistedSources:
+            if ".".join(testing) in GameConsole.blacklistedSources:
                 return True
         return False
     def isEnvironment(self, environment):
@@ -159,15 +187,35 @@ class GameConsole(object):
         try:
             levelname, source, message = stream.split(" ; ")
             if not self.isSourceBlacklisted(source):
-                color = {"DEBUG":(150,150,150,255),"INFO":(100,100,255,255),
-                         "WARNING":(255,255,50,255),"ERROR":(255,20,20,255),
-                         "CRITICAL":(255,20,20,255)}[levelname]
+                color = {"DEBUG":(200,200,200,255),"INFO":(150,150,255,255),
+                         "WARNING":(255,255,50,255),"ERROR":(255,50,50,255),
+                         "CRITICAL":(255,20,255,255)}[levelname]
+
+##                if self._everyOtherLine < 0:
+##                    #log.debug("!@ EVERY OTHER LINE")
+##                    color = lightenColor(color, 80)
+##                self._everyOtherLine = -self._everyOtherLine
 
                 multiline = message.split("\n")
+                newMultiline = []
+                for line in multiline:
+                    if len(line) >= self.TEXT_OVERFLOW:
+                        newMultiline += splitLine(line, self.TEXT_OVERFLOW)
+                    else:
+                        newMultiline += [line]
+                multiline = newMultiline
+                        
+                multiline[0] = source + " " * (self.SOURCE_BUFFER - len(source)) + multiline[0]
+                i = 0
+                for line in multiline[1:]:
+                    i += 1
+                    multiline[i] = " "*self.SOURCE_BUFFER + multiline[i]
 
                 for msg in multiline:
                     surface, rect = self.font.render(msg, color)
                     self.messages.append([surface,rect])
+                    if len(self.messages) > self.MESSAGE_BUFFER_LENGTH:
+                        self.messages = self.messages[1:]
 
                 self._recalculateCoordinates()
         except:
