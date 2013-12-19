@@ -1,4 +1,6 @@
 *.py[cod]
+*.ppt
+*.pptx
 
 # C extensions
 *.so
