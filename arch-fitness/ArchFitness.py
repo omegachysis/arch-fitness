@@ -31,5 +31,13 @@ log = logging.getLogger("R.ArchFitness")
 def main():
     log.info("starting ArchFitness")
 
+    game = Engine.Game(1600, 900, True)
+
+    startScreen = Engine.Application()
+    startScreen.backgroundColor = (0,0,0,255)
+
+    game.startApp(startScreen)
+    game.run()
+
 if __name__ == "__main__":
     Debug.test(main)

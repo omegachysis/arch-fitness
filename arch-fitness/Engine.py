@@ -128,7 +128,7 @@ class Game(object):
         self.app = application
 
     def postEvent(self, event):
-        log.info("posted event - " + event)
+        log.info("posted event - " + repr(event))
         pygame.event.post(pygame.event.Event(event))
         
     def run(self):
