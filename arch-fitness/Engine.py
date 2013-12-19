@@ -32,7 +32,7 @@ log = logging.getLogger("R.Engine")
 def main():
     import Motion
 
-    game = Game(1024, 600, True)
+    game = Game(1600, 900, True)
     
     testApp = Application()
     testApp.backgroundColor = (0, 0, 50, 255)
