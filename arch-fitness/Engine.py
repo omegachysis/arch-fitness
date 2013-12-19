@@ -121,7 +121,7 @@ class Game(object):
     def ypos(self, proportion):
         return self.height * proportion
 
-    def execute(self, command):
+    def execute(self, c, command):
         exec(command)
         
     def startApp(self, application):
@@ -185,7 +185,7 @@ class Application(object):
 
         self.addLayer("default")
 
-    def execute(self, command):
+    def execute(self, c, command):
         exec(command)
 
     def getLayerlevel(self, layer):
@@ -329,7 +329,7 @@ class Sprite(object):
 
         self.motions = []
 
-    def execute(self, command):
+    def execute(self, c, command):
         exec(command)
 
     def getHidden(self):

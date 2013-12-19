@@ -105,6 +105,10 @@ class GameConsole(object):
         for blacklistedSource in GameConsole.blacklistedSources:
             self.blacklistSource(blacklistedSource)
 
+    def runScript(self, script):
+        gc = self
+        exec(open("scripts/" + script).read())
+
     def resetConfiguration(self):
         exec(open("console.cfg", 'r').read())
 
@@ -141,24 +145,28 @@ class GameConsole(object):
         self.env = self
 
     def execute(self, command):
+        c = self
         log.info("(execute) " + command)
         try:
-            if self.env == self or command[0] == "#":
-                if command[0] == "#":
-                    if command[1] == "?":
-                        exec("print(" + command[2:] + ")")
+            if command[0] == "$":
+                self.env.execute(self, "c.runScript('" + command[1:] + ".py')")
+            else:
+                if self.env == self or command[0] == "#":
+                    if command[0] == "#":
+                        if command[1] == "?":
+                            exec("print(" + command[2:] + ")")
+                        else:
+                            exec(command[1:])
                     else:
-                        exec(command[1:])
+                        if command[0] == "?":
+                            exec("print(" + command[1:] + ")")
+                        else:
+                            exec(command)
                 else:
                     if command[0] == "?":
-                        exec("print(" + command[1:] + ")")
+                        self.env.execute(self, "print(" + command[1:] + ")")
                     else:
-                        exec(command)
-            else:
-                if command[0] == "?":
-                    self.env.execute("print(" + command[1:] + ")")
-                else:
-                    self.env.execute(command)
+                        self.env.execute(self, command)
         except:
             log.error("(execute) " + traceback.format_exc())
 

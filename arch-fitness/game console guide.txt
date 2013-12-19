@@ -20,9 +20,19 @@ pound sign:
 #self.resetEnv()
 #print(self.game.app)
 
+UPDATE: you now have access to the GameConsole class through the c variable!  This variable is available any time in the console.
+
 You can even chain this two command symbols together, using the pound sign first like so:
 
 #?self.env
 #?self.game.app
+
+You can use the SCRIPT running auto-command by using the dollar sign $ like so:
+$listScripts
+$test
+
+(You cannot pair the $ shortcut with the other symbols!  This script will run in the operating environment it is run in)
+
+You can make your own scripts by placing them in the scripts/ folder
 
 Check the GameConsole class for commands!  The only limit is python!
