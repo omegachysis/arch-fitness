@@ -29,7 +29,7 @@ logfile = logging.FileHandler("debug.log")
 logfile.setLevel(levelLogFile)
 
 formatter = logging.Formatter(
-    "%(asctime)s | %(levelname)8s | %(name)s |: %(message)s")
+    "%(lineno)4d | %(asctime)s | %(levelname)8s | %(name)s |: %(message)s")
 
 console.setFormatter(formatter)
 logfile.setFormatter(formatter)
