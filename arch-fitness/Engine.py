@@ -177,6 +177,7 @@ class Application(object):
     def __init__(self):
         self._layers = []
         self.layers = {}
+        self.registrar = {}
 
         log.info("initializing application")
         
@@ -240,8 +241,36 @@ class Application(object):
         else:
             return None
 
+    def registerSprite(self, sprite, name):
+        sprite._name = name
+        log.debug("registering sprite '%s'"%(sprite.name))
+        self.registrar[name.lower()] = sprite
+    def unregisterSprite(self, sprite):
+        log.debug("unregistering sprite '%s'"%(sprite.name))
+        if sprite.name.lower() in self.registrar:
+            log.debug("sprite of name '%s' unregistered successfully"%(sprite.name))
+            del self.registrar[sprite.name.lower()]
+        else:
+            log.warning("sprite of name '%s' is not in application"%(sprite.name))
+    def renameSprite(self, sprite, newName):
+        sprite._name = newName
+        log.debug("renaming sprite '%s' to new name '%s'"%(sprite.name, newName))
+        if sprite.name.lower() in self.registrar:
+            del self.registrar[sprite.name.lower()]
+        else:
+            if sprite.name != None:
+                log.warning("sprite of name '%s' is not in application"%(sprite.name))
+        self.registrar[newName] = sprite
+    def reg(self, name):
+        if name.lower() in self.registrar:
+            return self.registrar[name.lower()]
+        else:
+            log.warning("sprite of name '%s' is not in application"%(name))
+
     def addSprite(self, sprite, layer=0):
         log.debug("adding sprite to layer %s"%(layer))
+        if sprite.name != None:
+            self.registerSprite(sprite, sprite.name)
         if isinstance(layer, Layer):
             layer.addSprite(sprite)
         elif isinstance(layer, str):
@@ -254,6 +283,7 @@ class Application(object):
     def removeSprite(self, sprite):
         log.debug("removing sprite on level %d"%(sprite.layer.level))
         self._layers[sprite.layer.level].removeSprite(sprite)
+        self.unregisterSprite(sprite)
     
     def update(self, dt):
         dt /= 1000.0
@@ -313,6 +343,8 @@ class Sprite(object):
     game = None
     def __init__(self, surface, x, y):
         self.log = logging.getLogger("R.Engine.Sprite")
+
+        self._name = None
         
         self.surface = surface
         self.x = x
@@ -331,6 +363,17 @@ class Sprite(object):
         self.layer = None
 
         self.motions = []
+
+    def getName(self):
+        return self._name
+    def setName(self, name):
+        if self.app:
+            if self._name:
+                self.app.renameSprite(self, name)
+            else:
+                self.app.registerSprite(self, name)
+        self._name = name
+    name = property(getName, setName)
 
     def execute(self, c, command):
         exec(command)
