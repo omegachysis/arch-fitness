@@ -24,7 +24,7 @@ import logging
 from Motion.Action import Action
 
 import Debug
-import Interface
+#import Interface
 import Console
 
 log = logging.getLogger("R.Engine")
