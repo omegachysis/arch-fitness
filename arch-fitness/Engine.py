@@ -118,10 +118,10 @@ class Game(object):
 
         self.app = None
 
-    def xpos(self, proportion):
-        return self.width * proportion
-    def ypos(self, proportion):
-        return self.height * proportion
+    def xprop(self, proportion):
+        return int(self.width * proportion)
+    def yprop(self, proportion):
+        return int(self.height * proportion)
 
     def execute(self, c, command):
         exec(command)

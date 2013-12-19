@@ -28,6 +28,7 @@ You can even chain this two command symbols together, using the pound sign first
 #?self.game.app
 
 You can use the SCRIPT running auto-command by using the dollar sign $ like so:
+
 $listScripts
 $test
 

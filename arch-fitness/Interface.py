@@ -47,18 +47,19 @@ class SolidButton(Engine.Sprite):
     STATE_RESET = 0
     STATE_HOVER = 1
     STATE_PRESS = 2
-    def __init__(self, x, y, width, height,
-                 colorReset, colorHover, colorPress, command, textObject=None):
+    def __init__(self, x=0, y=0, width=50, height=50,
+                 colorReset=(0,0,0), colorHover=(0,0,0), colorPress=(0,0,0),
+                 command=None, textObject=None):
         """
         Create a solid colored button that runs 'command' when clicked.
         """
         log.debug("intializing new solid button")
 
+        self.text = None
+
         # Fill a rectangular and blank surface with the reset color
         self.surface = pygame.Surface((width, height))
         self.surface.fill(colorReset)
-
-        self.text = textObject
 
         # Set up Sprite object
         super(SolidButton, self).__init__(self.surface, x, y)
@@ -69,9 +70,12 @@ class SolidButton(Engine.Sprite):
         self.colorHover = colorHover
         self.colorPress = colorPress
 
+        self.text = textObject
         if textObject:
-            self.text.x = self.x
-            self.text.y = self.y
+            self.text._parentedX = self.text.x
+            self.text._parentedY = self.text.y
+            self.text.x = self.x + self.text._parentedX
+            self.text.y = self.y + self.text._parentedY
 
         self.command = command
         
@@ -83,11 +87,11 @@ class SolidButton(Engine.Sprite):
     def setX(self, x):
         super(SolidButton, self).setX(x)
         if self.text:
-            self.text.x = self.x
+            self.text.x = self.x + self.text._parentedX
     def setY(self, y):
         super(SolidButton, self).setY(y)
         if self.text:
-            self.text.y = self.y
+            self.text.y = self.y + self.text._parentedY
     x = property(Engine.Sprite.getX, setX)
     y = property(Engine.Sprite.getY, setY)
 
