@@ -192,43 +192,44 @@ class GameConsole(object):
 
     def renderMessage(self, stream):
         #log.debug("!@ rendering message stream: " + stream)
-        try:
-            levelname, source, message = stream.split(" ; ")
-            if not self.isSourceBlacklisted(source):
-                color = {"DEBUG":(200,200,200,255),"INFO":(150,150,255,255),
-                         "WARNING":(255,255,50,255),"ERROR":(255,50,50,255),
-                         "CRITICAL":(255,20,255,255)}[levelname]
+        if self.game.quitting == False:
+            try:
+                levelname, source, message = stream.split(" ; ")
+                if not self.isSourceBlacklisted(source):
+                    color = {"DEBUG":(200,200,200,255),"INFO":(150,150,255,255),
+                             "WARNING":(255,255,50,255),"ERROR":(255,50,50,255),
+                             "CRITICAL":(255,20,255,255)}[levelname]
 
-##                if self._everyOtherLine < 0:
-##                    #log.debug("!@ EVERY OTHER LINE")
-##                    color = lightenColor(color, 80)
-##                self._everyOtherLine = -self._everyOtherLine
+##                  if self._everyOtherLine < 0:
+##                      #log.debug("!@ EVERY OTHER LINE")
+##                      color = lightenColor(color, 80)
+##                  self._everyOtherLine = -self._everyOtherLine
 
-                multiline = message.split("\n")
-                newMultiline = []
-                for line in multiline:
-                    if len(line) >= self.TEXT_OVERFLOW:
-                        newMultiline += splitLine(line, self.TEXT_OVERFLOW)
-                    else:
-                        newMultiline += [line]
-                multiline = newMultiline
-                        
-                multiline[0] = source + " " * (self.SOURCE_BUFFER - len(source)) + multiline[0]
-                i = 0
-                for line in multiline[1:]:
-                    i += 1
-                    multiline[i] = " "*self.SOURCE_BUFFER + multiline[i]
+                    multiline = message.split("\n")
+                    newMultiline = []
+                    for line in multiline:
+                        if len(line) >= self.TEXT_OVERFLOW:
+                            newMultiline += splitLine(line, self.TEXT_OVERFLOW)
+                        else:
+                            newMultiline += [line]
+                    multiline = newMultiline
+                            
+                    multiline[0] = source + " " * (self.SOURCE_BUFFER - len(source)) + multiline[0]
+                    i = 0
+                    for line in multiline[1:]:
+                        i += 1
+                        multiline[i] = " "*self.SOURCE_BUFFER + multiline[i]
 
-                for msg in multiline:
-                    surface, rect = self.font.render(msg, color)
-                    self.messages.append([surface,rect])
-                    if len(self.messages) > self.MESSAGE_BUFFER_LENGTH:
-                        self.messages = self.messages[1:]
+                    for msg in multiline:
+                        surface, rect = self.font.render(msg, color)
+                        self.messages.append([surface,rect])
+                        if len(self.messages) > self.MESSAGE_BUFFER_LENGTH:
+                            self.messages = self.messages[1:]
 
-                self._recalculateCoordinates()
-        except:
-            log.error("!@ error rendering last stream" +\
-                      traceback.format_exc())
+                    self._recalculateCoordinates()
+            except:
+                log.error("!@ error rendering last stream" +\
+                          traceback.format_exc())
 
     def _recalculateCoordinates(self):
         i = len(self.messages)

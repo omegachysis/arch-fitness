@@ -98,6 +98,8 @@ class Game(object):
 
         self.width = width
         self.height = height
+
+        self.quitting = False
         
         pygame.init()
         
@@ -165,6 +167,7 @@ class Game(object):
 
     def quit(self):
         log.info("running game.quit")
+        self.quitting = True
         pygame.quit()
         sys.exit(0)
 
