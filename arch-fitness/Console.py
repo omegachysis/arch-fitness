@@ -105,6 +105,9 @@ class GameConsole(object):
         for blacklistedSource in GameConsole.blacklistedSources:
             self.blacklistSource(blacklistedSource)
 
+    def sprite(self, spriteName):
+        return self.game.app.reg(spriteName)
+
     def runScript(self, script):
         gc = self
         exec(open("scripts/" + script).read())
