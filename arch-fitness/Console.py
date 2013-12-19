@@ -144,7 +144,7 @@ class GameConsole(object):
     def resetEnv(self):
         self.env = self
 
-    def execute(self, command):
+    def execute(self, c, command):
         c = self
         log.info("(execute) " + command)
         try:
@@ -171,7 +171,7 @@ class GameConsole(object):
             log.error("(execute) " + traceback.format_exc())
 
     def executeEntry(self):
-        self.execute(self.entry)
+        self.execute(self, self.entry)
         self.entry = ""
         self._renderEntry()
 
