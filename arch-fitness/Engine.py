@@ -17,6 +17,7 @@
 import pygame
 import sys
 from pygame.locals import *
+from pygame import transform
 import pygame.freetype
 import traceback
 import logging
@@ -90,6 +91,9 @@ def main():
     
     game.startApp(testApp)
     game.run()
+
+def scaleImage(surface, width, height):
+    return transform.smoothscale(surface, (width, height))
 
 class Game(object):
     
