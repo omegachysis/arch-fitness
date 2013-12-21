@@ -58,87 +58,35 @@ class StartScreen(Engine.Application):
         self.quitButton.top = -1
         self.addSprite(self.quitButton)
 
-        self.pushupsButton = Interface.ImageButton(
-            x = self.game.xprop(.5), y = self.game.yprop(.5),
-            width = self.game.xprop(.15), height = self.game.xprop(.15),
-            imageGroup = Interface.loadButtonImageGroup("image/pushupsButton",".png"),
-            command = None,
-            textObject = Sprite.Text(
-                "Push-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
-            )
-        self.pushupsButton.name = "pushupsButton"
-        self.addSprite(self.pushupsButton)
+        self.pushupsButton = self.createExerciseButton(
+            "pushups", "Push-ups", .5, .5)
 
-##        self.pushupsButton = Interface.SolidButton(
-##            x = self.game.xprop(.5), y = self.game.yprop(.5),
-##            width = self.game.xprop(.15), height = self.game.xprop(.15),
-##            colorReset = (255,90,0),
-##            colorHover = (255,130,40),
-##            colorPress = (255,200,150),
-##            command = None,
-##            textObject = Sprite.Text(
-##                "Push-ups", 0, self.game.xprop(.055),
-##                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
-##            )
-##        self.pushupsButton.name = "pushupsButton"
-##        self.addSprite(self.pushupsButton)
+        self.pullupsButton = self.createExerciseButton(
+            "pullups", "Pull-ups", .50 - .18, .5)
 
-        self.pullupsButton = Interface.SolidButton(
-            x = self.game.xprop(.50 - .18), y = self.game.yprop(.5),
-            width = self.game.xprop(.15), height = self.game.xprop(.15),
-            colorReset = (0,90,255),
-            colorHover = (40,130,255),
-            colorPress = (150,200,255),
-            command = None,
-            textObject = Sprite.Text(
-                "Pull-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
-            )
-        self.pullupsButton.name = "pullupsButton"
-        self.addSprite(self.pullupsButton)
-        
-        self.curlupsButton = Interface.SolidButton(
-            x = self.game.xprop(.50 + .18), y = self.game.yprop(.5),
-            width = self.game.xprop(.15), height = self.game.xprop(.15),
-            colorReset = (205,50,205),
-            colorHover = (205,90,205),
-            colorPress = (255,160,255),
-            command = None,
-            textObject = Sprite.Text(
-                "Curl-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
-            )
-        self.curlupsButton.name = "curlupsButton"
-        self.addSprite(self.curlupsButton)
-        
-        self.squatsButton = Interface.SolidButton(
-            x = self.game.xprop(.50 + .18*2), y = self.game.yprop(.5),
-            width = self.game.xprop(.15), height = self.game.xprop(.15),
-            colorReset = (0,190,50),
-            colorHover = (50,230,80),
-            colorPress = (150,240,180),
-            command = None,
-            textObject = Sprite.Text(
-                "Squats", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
-            )
-        self.squatsButton.name = "squatsButton"
-        self.addSprite(self.squatsButton)
+        self.curlupsButton = self.createExerciseButton(
+            "curlups", "Curl-ups", .50 + .18, .5)
 
-        self.dipsButton = Interface.SolidButton(
-            x = self.game.xprop(.50 - .18*2), y = self.game.yprop(.5),
+        self.squatsButton = self.createExerciseButton(
+            "squats", "Squats", .50 + .18 * 2, .5)
+
+        self.dipsButton = self.createExerciseButton(
+            "dips", "Dips", .50 - .18 * 2, .5)
+
+    def createExerciseButton(self, exerciseName, label, xprop, yprop, command=None):
+        button = Interface.ImageButton(
+            x = self.game.xprop(xprop), y = self.game.yprop(yprop),
             width = self.game.xprop(.15), height = self.game.xprop(.15),
-            colorReset = (210,0,0),
-            colorHover = (250,50,50),
-            colorPress = (255,120,120),
-            command = None,
+            imageGroup = Interface.loadButtonImageGroup("image/" + exerciseName + "Button",".png"),
+            command = command,
             textObject = Sprite.Text(
-                "Dips", 0, self.game.xprop(.055),
+                label, 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
-        self.dipsButton.name = "dipsButton"
-        self.addSprite(self.dipsButton)
+        button.name = exerciseName + "Button"
+        self.addSprite(button)
+
+        return button
 
 
 if __name__ == "__main__":
