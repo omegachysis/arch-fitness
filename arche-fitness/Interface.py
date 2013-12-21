@@ -44,6 +44,22 @@ def main():
     game.startApp(testApp)
     game.run()
 
+def loadButtonImageGroup(prefix, suffix, group=("Reset","Hover","Press"),
+                         perPixelAlpha=True):
+    """
+    Loads a button image group ('reset', 'press', 'hover') on
+    those characteristics.  The group identifier is placed between
+    'prefix' and 'suffix'
+    """
+    if perPixelAlpha:
+        return (pygame.image.load(prefix+group[0]+suffix).convert_alpha(),
+                pygame.image.load(prefix+group[1]+suffix).convert_alpha(),
+                pygame.image.load(prefix+group[2]+suffix).convert_alpha())
+    else:
+        return (pygame.image.load(prefix+group[0]+suffix).convert(),
+                pygame.image.load(prefix.group[1]+suffix).convert(),
+                pygame.image.load(prefix+group[2].suffix).convert())
+
 class Button(Sprite.Sprite):
     STATE_RESET = 0
     STATE_HOVER = 1
@@ -158,7 +174,7 @@ class ImageButton(Button):
     STATE_RESET = 0
     STATE_HOVER = 1
     STATE_PRESS = 2
-    def __init__(self, x=0, y=0, width=50, height=50,
+    def __init__(self, x=0, y=0, width=50, height=50, imageGroup=None,
                  imageReset=None, imageHover=None, imagePress=None,
                  command=None, textObject=None):
         """
@@ -166,16 +182,19 @@ class ImageButton(Button):
         """
         log.debug("initializing new image button")
 
+        if imageGroup:
+            imageReset, imageHover, imagePress = imageGroup
+        else:
+            self.imageReset = imageReset
+            self.imageHover = imageHover
+            self.imagePress = imagePress
+
         self.surface = imageReset
 
         super(ImageButton, self).__init__(self.surface, x, y, command, textObject)
 
         self.width = width
         self.height = height
-
-        self.imageReset = imageReset
-        self.imageHover = imageHover
-        self.imagePress = imagePress
 
     def hover(self):
         self.surface = self.imageHover
