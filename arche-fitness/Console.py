@@ -22,6 +22,10 @@ from pygame.locals import *
 log = logging.getLogger("R.Console")
 
 class ConsoleSTDOUT(object):
+    """
+    Used to recieve output from python calls to print() and similar functions.  It then transfers
+    these calls to the GameConsole.
+    """
     def __init__(self, gameConsole):
         self.gameConsole = gameConsole
     def write(self, data):
@@ -32,33 +36,40 @@ class ConsoleSTDOUT(object):
             self.gameConsole.flush()
 
 def splitLine(string, overflow=70):
+    """
+    Split a line with new lines where the line buffer width is 'overflow'
+    """
     w=[]
     n=len(string)
     for i in range(0,n,overflow):
         w.append(string[i:i+overflow])
     return w
-def lightenColor(color, value):
-    r, g, b, a = color
-    r += value
-    g += value
-    b += value
-    a = 255
-    if r > 255:
-        r = 255
-    if g > 255:
-        g = 255
-    if b > 255:
-        b = 255
-    return (r,g,b,a)
+
+##def lightenColor(color, value):
+##    """
+##    Brighten every color element value by 'value'
+##    """
+##    r, g, b, a = color
+##    r += value
+##    g += value
+##    b += value
+##    a = 255
+##    if r > 255:
+##        r = 255
+##    if g > 255:
+##        g = 255
+##    if b > 255:
+##        b = 255
+##    return (r,g,b,a)
 
 class GameConsole(object):
-    MESSAGE_HEIGHT = 15
-    READING_BUFFER = 50
-    ENTRY_BUFFER = 15
-    BUFFER_LEFT = 15
-    DARKEN_WIDTH = .80 # percent of screen width
+    MESSAGE_HEIGHT = 15 # spacing in pixels to give each message, including the message itself
+    CONSOLE_PADDING = 50 # space in pixels from the bottom of the screen where messages start
+    ENTRY_PADDING = 15 # space in pixels from the bottom of the screen where the entry box starts
+    PADDING_LEFT = 15 # padding in pixels from the left of the screen to text.
+    DARKEN_WIDTH = .80 # percent of screen width to darken from console background
     TEXT_OVERFLOW = 80 # characters at 1280 px width
-    SOURCE_BUFFER = 25 # characters to space after log source
+    LOGSOURCE_SPACING = 25 # characters to space after logging source values
     MESSAGE_BUFFER_LENGTH = 40 # messages to render before deleting
     
     def __init__(self, game, level=logging.INFO):
@@ -106,21 +117,29 @@ class GameConsole(object):
             self.blacklistSource(blacklistedSource)
 
     def sprite(self, spriteName):
+        """ Return sprite from application registry """
         return self.game.app.reg(spriteName)
 
     def runScript(self, script):
+        """
+        Run script from script directory.
+        See console command guide for shortcut ($)
+        """
         gc = self
         exec(open("script/" + script).read())
 
     def resetConfiguration(self):
+        """ Load default console configuration. """
         exec(open("config/console.cfg", 'r').read())
 
     def blacklistSource(self, source):
+        """ Prevent a logging source from logging to the console. """
         log.info("blacklisting " + source)
         if source not in GameConsole.blacklistedSources:
             GameConsole.blacklistedSources.append(source)
 
     def isSourceBlacklisted(self, source):
+        """ Return whether a given logsource is not allowed to log to the console. """
         components = source.split(".")
         i = 0
         for component in components:
@@ -130,6 +149,7 @@ class GameConsole(object):
                 return True
         return False
     def isEnvironment(self, environment):
+        """ Return whether 'environment' is a suitable environ for the console. """
         return hasattr(environment, 'execute')
     isEnv = isEnvironment
 
@@ -144,11 +164,12 @@ class GameConsole(object):
     environment = property(getEnvironment, setEnvironment)
     def resetEnvironment(self):
         self.env = self
-    def resetEnv(self):
+    def resetEnv(self): #shorthand
         self.env = self
 
     def execute(self, c, command):
-        c = self
+        """ Execute a console command with 'c' as the GameConsole instance. """
+        c = self # we only use 'c' in the execute function for compatibility with other environments!
         log.info("(execute) " + command)
         try:
             if command[0] == "$":
@@ -187,8 +208,8 @@ class GameConsole(object):
 
     def _renderEntry(self):
         surface, rect = self.font.render(self.entry, (255,255,255,255))
-        rect.left = GameConsole.BUFFER_LEFT
-        rect.bottom = self.game.height - GameConsole.ENTRY_BUFFER
+        rect.left = GameConsole.PADDING_LEFT
+        rect.bottom = self.game.height - GameConsole.ENTRY_PADDING
 
         self._entrySurface = surface
         self._entryRect = rect
@@ -217,11 +238,11 @@ class GameConsole(object):
                             newMultiline += [line]
                     multiline = newMultiline
                             
-                    multiline[0] = source + " " * (self.SOURCE_BUFFER - len(source)) + multiline[0]
+                    multiline[0] = source + " " * (self.LOGSOURCE_SPACING - len(source)) + multiline[0]
                     i = 0
                     for line in multiline[1:]:
                         i += 1
-                        multiline[i] = " "*self.SOURCE_BUFFER + multiline[i]
+                        multiline[i] = " "*self.LOGSOURCE_SPACING + multiline[i]
 
                     for msg in multiline:
                         surface, rect = self.font.render(msg, color)
@@ -240,8 +261,8 @@ class GameConsole(object):
             i -= 1
             message[1].top = self.game.height - \
                                 GameConsole.MESSAGE_HEIGHT * i - \
-                                GameConsole.READING_BUFFER
-            message[1].left = GameConsole.BUFFER_LEFT
+                                GameConsole.CONSOLE_PADDING
+            message[1].left = GameConsole.PADDING_LEFT
 
     def draw(self, canvas):
         canvas.blit(self._consoleSurface, (0,0))
