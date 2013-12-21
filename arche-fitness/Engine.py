@@ -36,6 +36,9 @@ class Game(object):
     def __init__(self, width, height, fullscreen=False):
         log.info("initializing game engine")
 
+        exec(open("config/engine.cfg").read())
+        log.debug("Game.limitFramerate = %d"%(self.limitFramerate))
+
         self.width = width
         self.height = height
 
@@ -104,7 +107,7 @@ class Game(object):
                             self.gameConsole.entryAdd(event.unicode)
 
             pygame.display.update()
-            self.clock.tick()
+            self.clock.tick(self.limitFramerate)
 
     def quit(self):
         log.info("running game.quit")
