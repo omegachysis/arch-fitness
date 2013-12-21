@@ -88,7 +88,7 @@ class GameConsole(object):
         self._consoleSurface.set_alpha(200)
         self._consoleSurface = self._consoleSurface.convert_alpha()
 
-        self.font = pygame.freetype.Font("consola.ttf",
+        self.font = pygame.freetype.Font("font/consola.ttf",
                                          ptsize = 12)
 
         self._renderEntry()
@@ -110,10 +110,10 @@ class GameConsole(object):
 
     def runScript(self, script):
         gc = self
-        exec(open("scripts/" + script).read())
+        exec(open("script/" + script).read())
 
     def resetConfiguration(self):
-        exec(open("console.cfg", 'r').read())
+        exec(open("config/console.cfg", 'r').read())
 
     def blacklistSource(self, source):
         log.info("blacklisting " + source)

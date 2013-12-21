@@ -52,7 +52,7 @@ class StartScreen(Engine.Application):
             colorPress = (255,150,150),
             command = self.game.quit,
             textObject = Sprite.Text(
-                "X", 0, 0, (255,255,255), 40, "consola.ttf"),
+                "X", 0, 0, (255,255,255), 40, "font/consola.ttf"),
             )
         self.quitButton.right = self.game.width + 1
         self.quitButton.top = -1
@@ -67,7 +67,7 @@ class StartScreen(Engine.Application):
             command = None,
             textObject = Sprite.Text(
                 "Push-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "consola.ttf"),
+                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
         self.pushupsButton.name = "pushupsButton"
         self.addSprite(self.pushupsButton)
@@ -81,7 +81,7 @@ class StartScreen(Engine.Application):
             command = None,
             textObject = Sprite.Text(
                 "Pull-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "consola.ttf"),
+                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
         self.pullupsButton.name = "pullupsButton"
         self.addSprite(self.pullupsButton)
@@ -95,7 +95,7 @@ class StartScreen(Engine.Application):
             command = None,
             textObject = Sprite.Text(
                 "Curl-ups", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "consola.ttf"),
+                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
         self.curlupsButton.name = "curlupsButton"
         self.addSprite(self.curlupsButton)
@@ -109,7 +109,7 @@ class StartScreen(Engine.Application):
             command = None,
             textObject = Sprite.Text(
                 "Squats", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "consola.ttf"),
+                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
         self.squatsButton.name = "squatsButton"
         self.addSprite(self.squatsButton)
@@ -123,7 +123,7 @@ class StartScreen(Engine.Application):
             command = None,
             textObject = Sprite.Text(
                 "Dips", 0, self.game.xprop(.055),
-                (255,255,255), self.game.xprop(.028), "consola.ttf"),
+                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
             )
         self.dipsButton.name = "dipsButton"
         self.addSprite(self.dipsButton)

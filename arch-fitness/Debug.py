@@ -17,7 +17,7 @@ import logging
 from logging import *
 import sys
 
-exec(open("debug.cfg").read())
+exec(open("config/debug.cfg").read())
 
 log = logging.getLogger("R") # "R" stands for 'root'
 log.setLevel(logging.DEBUG)
@@ -25,7 +25,7 @@ log.setLevel(logging.DEBUG)
 console = logging.StreamHandler()
 console.setLevel(levelSystemConsole)
 
-logfile = logging.FileHandler("debug.log")
+logfile = logging.FileHandler("error.log")
 logfile.setLevel(levelLogFile)
 
 formatter = logging.Formatter(
