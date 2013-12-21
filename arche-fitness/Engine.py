@@ -82,6 +82,7 @@ class Game(object):
                 self.app.update(dt)
                 self.app.draw()
             if not self.gameConsole.hidden:
+                self.gameConsole.update(dt)
                 self.gameConsole.draw(self.canvas)
 
             for event in pygame.event.get():
@@ -103,7 +104,7 @@ class Game(object):
                             self.gameConsole.entryAdd(event.unicode)
 
             pygame.display.update()
-            self.clock.tick(0)
+            self.clock.tick(60)
 
     def quit(self):
         log.info("running game.quit")
