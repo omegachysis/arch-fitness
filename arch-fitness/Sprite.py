@@ -162,19 +162,23 @@ class Sprite(object):
     width = property(getWidth, setWidth)
     height= property(getHeight, setHeight)
 
-    def getsurface(self):
+    def _isUnscaled(self):
+        return (self._rect.width == self.__surface__.get_rect().width and \
+                self._rect.height == self.__surface__.get_rect().height)
+
+    def getSurface(self):
         return self._surface
-    def setsurface(self, surface):
+    def setSurface(self, surface):
         self.__surface__ = surface
         self._surface = surface
+        self._rect = surface.get_rect()
         # Trigger the game engine to scale the new surface to current
         #  width and height.
-        if self._rect: # we can only do this with a rectangle object.
+        if self._rect and self._isUnscaled(): # we can only do this with a rectangle object.
             self.setWidth(self.getWidth())
             self.setHeight(self.getHeight())
         
-        self._rect = surface.get_rect()
-    surface = property(getsurface, setsurface)
+    surface = property(getSurface, setSurface)
 
     def getRect(self):        
         return self._rect
@@ -238,4 +242,5 @@ class Text(Sprite):
 
 def scaleImage(surface, width, height):
     """ Return surface scaled to fit width and height. """
+    log.debug("scaled image %s" % repr(surface))
     return transform.smoothscale(surface, (width, height))
