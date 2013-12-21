@@ -30,68 +30,6 @@ import Console
 
 log = logging.getLogger("R.Engine")
 
-def main():
-    import Motion
-
-    game = Game(1600, 900, True)
-    
-    testApp = Application()
-    testApp.backgroundColor = (0, 0, 50, 255)
-
-    testsurface = pygame.image.load("test.png")
-    testSprite = Sprite(testsurface.convert(), 250, 250)
-    testSprite.alpha = 255
-
-    testApp.addSprite(testSprite, 0) # add to top layer - 0
-
-    testText = Text("Hello World!", 200, 100, (255,255,255,255),
-                    50, "consola.ttf")
-
-    exitButton = Interface.SolidButton(400, 200, 50, 50,
-                             (255,0,0,255), (255,0,255,255), (0,255,0,255),
-                             game.quit)
-
-    exitButton.text = Text("X", 50, 50, (255,255,255,255), 50, "consola.ttf")
-
-    testApp.addSprite(exitButton)
-
-    testApp.addSprite(testText, "default") # add to default layer
-
-    testText = Text("Hello World!", 200, 200, (255,255,255,255),
-                    50, "consola.ttf")
-
-    testApp.addLayer("top layer", 0)
-
-    testApp.addSprite(testText, "top layer")
-
-    newMotion = Motion.looped(Motion.In.Fade(testSprite, 5.0, 255), 0)
-
-    #---------------------------------------
-
-    global subjectSprite
-    global subjectMotion
-
-    subjectSprite = Sprite(testsurface.convert(), 500, 500)
-    testApp.addSprite(subjectSprite)
-
-    def start():
-        Motion.looped(Motion.In.Fade(subjectSprite, 4.0, 255), 0)
-    def stop():
-        subjectSprite.removeMotion("in.fade")
-
-    startButton = Interface.SolidButton(400, 600, 100, 50,
-                              (0,255,0,255), (50,255,50,255), (100,255,100,255),
-                              start)
-    stopButton = Interface.SolidButton(600, 600, 100, 50,
-                             (255,0,0,255), (255,50,50,255), (255,100,100,255),
-                             stop)
-
-    testApp.addSprite(startButton)
-    testApp.addSprite(stopButton)
-    
-    game.startApp(testApp)
-    game.run()
-
 def scaleImage(surface, width, height):
     return transform.smoothscale(surface, (width, height))
 
@@ -483,12 +421,19 @@ class Sprite(object):
         return self._rect.width
     def getHeight(self):
         return self._rect.height
-    width = property(getWidth)
-    height= property(getHeight)
+    def setWidth(self, width):
+        self._surface = scaleImage(self.__surface__, width, self._rect.height)
+        self._rect.width = width
+    def setHeight(self, height):
+        self._surface = scaleImage(self.__surface__, self._rect.width, height)
+        self._rect.height = height
+    width = property(getWidth, setWidth)
+    height= property(getHeight, setHeight)
 
     def getsurface(self):
         return self._surface
     def setsurface(self, surface):
+        self.__surface__ = surface
         self._surface = surface
         self._rect = surface.get_rect()
     surface = property(getsurface, setsurface)
@@ -552,6 +497,68 @@ class Text(Sprite):
         self._size = size
         self.render()
     size = property(getSize, setSize)
+
+def main():
+    import Motion
+
+    game = Game(1600, 900, True)
+    
+    testApp = Application()
+    testApp.backgroundColor = (0, 0, 50, 255)
+
+    testsurface = pygame.image.load("test.png")
+    testSprite = Sprite(testsurface.convert(), 250, 250)
+    testSprite.alpha = 255
+
+    testApp.addSprite(testSprite, 0) # add to top layer - 0
+
+    testText = Text("Hello World!", 200, 100, (255,255,255,255),
+                    50, "consola.ttf")
+
+    exitButton = Interface.SolidButton(400, 200, 50, 50,
+                             (255,0,0,255), (255,0,255,255), (0,255,0,255),
+                             game.quit)
+
+    exitButton.text = Text("X", 50, 50, (255,255,255,255), 50, "consola.ttf")
+
+    testApp.addSprite(exitButton)
+
+    testApp.addSprite(testText, "default") # add to default layer
+
+    testText = Text("Hello World!", 200, 200, (255,255,255,255),
+                    50, "consola.ttf")
+
+    testApp.addLayer("top layer", 0)
+
+    testApp.addSprite(testText, "top layer")
+
+    newMotion = Motion.looped(Motion.In.Fade(testSprite, 5.0, 255), 0)
+
+    #---------------------------------------
+
+    global subjectSprite
+    global subjectMotion
+
+    subjectSprite = Sprite(testsurface.convert(), 500, 500)
+    testApp.addSprite(subjectSprite)
+
+    def start():
+        Motion.looped(Motion.In.Fade(subjectSprite, 4.0, 255), 0)
+    def stop():
+        subjectSprite.removeMotion("in.fade")
+
+    startButton = Interface.SolidButton(400, 600, 100, 50,
+                              (0,255,0,255), (50,255,50,255), (100,255,100,255),
+                              start)
+    stopButton = Interface.SolidButton(600, 600, 100, 50,
+                             (255,0,0,255), (255,50,50,255), (255,100,100,255),
+                             stop)
+
+    testApp.addSprite(startButton)
+    testApp.addSprite(stopButton)
+    
+    game.startApp(testApp)
+    game.run()
 
 if __name__ == "__main__":
     Debug.test(main)
