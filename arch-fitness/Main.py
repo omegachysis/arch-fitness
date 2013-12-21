@@ -25,6 +25,7 @@ import Engine
 import Debug
 import Interface
 import Console
+import Sprite
 
 log = logging.getLogger("R.Main")
 
@@ -50,7 +51,7 @@ class StartScreen(Engine.Application):
             colorHover = (255,50,50),
             colorPress = (255,150,150),
             command = self.game.quit,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "X", 0, 0, (255,255,255), 40, "consola.ttf"),
             )
         self.quitButton.right = self.game.width + 1
@@ -64,7 +65,7 @@ class StartScreen(Engine.Application):
             colorHover = (255,130,40),
             colorPress = (255,200,150),
             command = None,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "Push-ups", 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "consola.ttf"),
             )
@@ -78,7 +79,7 @@ class StartScreen(Engine.Application):
             colorHover = (40,130,255),
             colorPress = (150,200,255),
             command = None,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "Pull-ups", 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "consola.ttf"),
             )
@@ -92,7 +93,7 @@ class StartScreen(Engine.Application):
             colorHover = (205,90,205),
             colorPress = (255,160,255),
             command = None,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "Curl-ups", 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "consola.ttf"),
             )
@@ -106,7 +107,7 @@ class StartScreen(Engine.Application):
             colorHover = (50,230,80),
             colorPress = (150,240,180),
             command = None,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "Squats", 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "consola.ttf"),
             )
@@ -120,7 +121,7 @@ class StartScreen(Engine.Application):
             colorHover = (250,50,50),
             colorPress = (255,120,120),
             command = None,
-            textObject = Engine.Text(
+            textObject = Sprite.Text(
                 "Dips", 0, self.game.xprop(.055),
                 (255,255,255), self.game.xprop(.028), "consola.ttf"),
             )

@@ -27,6 +27,7 @@ from Motion.Action import Action
 import Debug
 #import Interface
 import Console
+import Sprite
 
 log = logging.getLogger("R.Engine")
 
@@ -56,7 +57,7 @@ class Game(object):
 
         Application.canvas = self.canvas
         Application.game = self
-        Sprite.game = self
+        Sprite.Sprite.game = self
 
         self.app = None
 

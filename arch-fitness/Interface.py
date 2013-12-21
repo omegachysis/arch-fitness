@@ -93,8 +93,8 @@ class SolidButton(Sprite.Sprite):
         super(SolidButton, self).setY(y)
         if self.text:
             self.text.y = self.y + self.text._parentedY
-    x = property(Engine.Sprite.getX, setX)
-    y = property(Engine.Sprite.getY, setY)
+    x = property(Sprite.Sprite.getX, setX)
+    y = property(Sprite.Sprite.getY, setY)
 
     def hover(self):
         """State invoked when the mouse is on top of the button."""
