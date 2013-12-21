@@ -121,6 +121,20 @@ class Button(Sprite.Sprite):
     def hover(self): pass
     def press(self): pass
     def reset(self): pass
+
+    def _triggerState(self):
+        """ Refresh a button by setting its state to itself. """
+        state = self.state
+        self.state = None
+        if state == Button.STATE_HOVER:
+            self._hover()
+        elif state == Button.STATE_PRESS:
+            self._press()
+        elif state == Button.STATE_RESET:
+            self._reset()
+
+    def refresh(self):
+        self._triggerState()
     
     def _hover(self):
         """State invoked when the mouse is on top of the button."""
@@ -205,11 +219,13 @@ class ImageButton(Button):
         self.imageHover = Sprite.scaleImage(self._imageHover, width, self.height)
         self.imagePress = Sprite.scaleImage(self._imagePress, width, self.height)
         self._rect.width = self.imageReset.get_width()
+        self.refresh()
     def setHeight(self, height):
         self.imageReset = Sprite.scaleImage(self._imageReset, self.width, height)
         self.imageHover = Sprite.scaleImage(self._imageHover, self.width, height)
         self.imagePress = Sprite.scaleImage(self._imagePress, self.width, height)
         self._rect.height = self.imageReset.get_height()
+        self.refresh()
     width = property(Button.getWidth, setWidth)
     height= property(Button.getHeight, setHeight)
 
