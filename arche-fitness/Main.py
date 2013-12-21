@@ -58,12 +58,12 @@ class StartScreen(Engine.Application):
         self.quitButton.top = -1
         self.addSprite(self.quitButton)
 
-        self.pushupsButton = Interface.SolidButton(
+        self.pushupsButton = Interface.ImageButton(
             x = self.game.xprop(.5), y = self.game.yprop(.5),
             width = self.game.xprop(.15), height = self.game.xprop(.15),
-            colorReset = (255,90,0),
-            colorHover = (255,130,40),
-            colorPress = (255,200,150),
+            imageReset = pygame.image.load("image/pushupsButtonReset.png").convert_alpha(),
+            imagePress = pygame.image.load("image/pushupsButtonPress.png").convert_alpha(),
+            imageHover = pygame.image.load("image/pushupsButtonHover.png").convert_alpha(),
             command = None,
             textObject = Sprite.Text(
                 "Push-ups", 0, self.game.xprop(.055),
@@ -71,6 +71,20 @@ class StartScreen(Engine.Application):
             )
         self.pushupsButton.name = "pushupsButton"
         self.addSprite(self.pushupsButton)
+
+##        self.pushupsButton = Interface.SolidButton(
+##            x = self.game.xprop(.5), y = self.game.yprop(.5),
+##            width = self.game.xprop(.15), height = self.game.xprop(.15),
+##            colorReset = (255,90,0),
+##            colorHover = (255,130,40),
+##            colorPress = (255,200,150),
+##            command = None,
+##            textObject = Sprite.Text(
+##                "Push-ups", 0, self.game.xprop(.055),
+##                (255,255,255), self.game.xprop(.028), "font/consola.ttf"),
+##            )
+##        self.pushupsButton.name = "pushupsButton"
+##        self.addSprite(self.pushupsButton)
 
         self.pullupsButton = Interface.SolidButton(
             x = self.game.xprop(.50 - .18), y = self.game.yprop(.5),

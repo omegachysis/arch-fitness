@@ -163,18 +163,25 @@ class Sprite(object):
     height= property(getHeight, setHeight)
 
     def _isScaled(self):
-        return not (self._rect.width == self.__surface__.get_rect().width and \
-                self._rect.height == self.__surface__.get_rect().height)
+        return (self.__rect.width != self.__surface__.get_rect().width or \
+                self.__rect.height != self.__surface__.get_rect().height)
 
     def getSurface(self):
         return self._surface
     def setSurface(self, surface):
         self.__surface__ = surface
         self._surface = surface
+        if hasattr(self, "_rect"):
+            self.__rect = self._rect
+        else:
+            self.__rect = None
         self._rect = surface.get_rect()
         # Trigger the game engine to scale the new surface to current
         #  width and height.
-        if self._rect and self._isScaled(): # we can only do this with a rectangle object.
+        log.debug("self.__rect: %s"%repr(self.__rect))
+        if self.__rect and self._isScaled(): # we can only do this with a rectangle object.
+            self._rect = self.__rect
+            log.debug("width %d height %d"%(self.getWidth(), self.getHeight()))
             self.setWidth(self.getWidth())
             self.setHeight(self.getHeight())
         

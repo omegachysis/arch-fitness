@@ -136,6 +136,99 @@ class SolidButton(Sprite.Sprite):
         super(SolidButton, self).tick(dt)
 
         self.update(dt)
+
+class ImageButton(Sprite.Sprite):
+    STATE_RESET = 0
+    STATE_HOVER = 1
+    STATE_PRESS = 2
+    def __init__(self, x=0, y=0, width=50, height=50,
+                 imageReset=None, imageHover=None, imagePress=None,
+                 command=None, textObject=None):
+        """
+        Create a button that runs 'command' when clicked.
+        """
+        log.debug("initializing new image button")
+
+        self.surface = imageReset
+
+        self.text = None
+
+        super(ImageButton, self).__init__(self.surface, x, y)
+
+        self.width = width
+        self.height = height
+
+        self.state = ImageButton.STATE_RESET
+
+        self.imageReset = imageReset
+        self.imageHover = imageHover
+        self.imagePress = imagePress
+
+        self.command = command
+
+        self.text = textObject
+        if textObject:
+            self.text._parentedX = self.text.x
+            self.text._parentedY = self.text.y
+            self.text.x = self.x + self.text._parentedX
+            self.text.y = self.y + self.text._parentedY
+
+    def draw(self, canvas):
+        super(ImageButton, self).draw(canvas)
+        if self.text:
+            self.text.draw(canvas)
+
+    def setX(self, x):
+        super(ImageButton, self).setX(x)
+        if self.text:
+            self.text.x = self.x + self.text._parentedX
+    def setY(self, y):
+        super(ImageButton, self).setY(y)
+        if self.text:
+            self.text.y = self.y + self.text._parentedY
+    x = property(Sprite.Sprite.getX, setX)
+    y = property(Sprite.Sprite.getY, setY)
+
+    def hover(self):
+        """State invoked when the mouse is on top of the button."""
+        if self.state != ImageButton.STATE_HOVER:
+            log.debug("hovering over button")
+            self.surface = self.imageHover
+            if self.state == ImageButton.STATE_PRESS:
+                if self.command:
+                    self.command()
+            self.state = ImageButton.STATE_HOVER
+    def press(self):
+        """State invoked when the mouse is on top of the button and clicks."""
+        if self.state != ImageButton.STATE_PRESS:
+            log.debug("pressing button")
+            self.surface = self.imagePress
+            self.state = ImageButton.STATE_PRESS
+    def reset(self):
+        """State invoked when the mouse is outside of the button boundary."""
+        if self.state != ImageButton.STATE_RESET:
+            log.debug("resetting button")
+            self.surface = self.imageReset
+            self.state = ImageButton.STATE_RESET
+
+    def update(self, dt):
+        pass
+
+    def tick(self, dt):
+        mousex, mousey = pygame.mouse.get_pos()
+
+        if mousex > self.left and mousex < self.right and \
+           mousey > self.top  and mousey < self.bottom:
+            if pygame.mouse.get_pressed()[0]:
+                self.press()
+            else:
+                self.hover()
+        else:
+            self.reset()
+
+        super(ImageButton, self).tick(dt)
+
+        self.update(dt)
         
 
 if __name__ == "__main__":
