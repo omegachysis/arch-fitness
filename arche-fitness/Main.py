@@ -32,7 +32,7 @@ log = logging.getLogger("R.Main")
 def main():
     log.info("starting Main")
 
-    game = Engine.Game(1024, 600, False)
+    game = Engine.Game(1280, 720, True)
 
     startScreen = StartScreen()
 

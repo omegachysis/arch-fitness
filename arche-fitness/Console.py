@@ -295,8 +295,7 @@ class GameConsole(object):
     def update(self, dt):
         self._fpsUpdateWait -= dt
         if self._fpsUpdateWait <= 0.0:
-            self.fps = int(1.0/(dt/1000.0))
-            self._renderFPS(self.fps)
+            self._renderFPS(int(self.game.clock.get_fps()))
             self._fpsUpdateWait = self._fpsUpdateDelay
 
     def write(self, data):

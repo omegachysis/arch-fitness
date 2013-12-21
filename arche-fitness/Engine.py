@@ -104,7 +104,7 @@ class Game(object):
                             self.gameConsole.entryAdd(event.unicode)
 
             pygame.display.update()
-            self.clock.tick(60)
+            self.clock.tick()
 
     def quit(self):
         log.info("running game.quit")
