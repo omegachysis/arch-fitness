@@ -77,6 +77,10 @@ class GameConsole(object):
         
         rootLogger = logging.getLogger("R")
 
+        self.fps = 0
+        self._fpsUpdateWait = 0
+        self._fpsUpdateDelay = 100
+
         GameConsole.TEXT_OVERFLOW = int(
             GameConsole.TEXT_OVERFLOW * float(game.width) / 1280.0)
         
@@ -214,6 +218,14 @@ class GameConsole(object):
         self._entrySurface = surface
         self._entryRect = rect
 
+    def _renderFPS(self, fps):
+        surface, rect = self.font.render(str(fps), (255,255,255,255))
+        rect.left = GameConsole.PADDING_LEFT
+        rect.top = GameConsole.PADDING_LEFT
+
+        self._fpsSurface = surface
+        self._fpsRect = rect
+
     def renderMessage(self, stream):
         #log.debug("!@ rendering message stream: " + stream)
         if self.game.quitting == False:
@@ -269,6 +281,8 @@ class GameConsole(object):
         canvas.blit(self._entrySurface, self._entryRect)
         for message in self.messages:
             canvas.blit(message[0], message[1])
+        canvas.blit(self._fpsSurface, self._fpsRect)
+            
 
     def entryAdd(self, unicode):
         self.entry += unicode
@@ -278,7 +292,11 @@ class GameConsole(object):
         self._renderEntry()
 
     def update(self, dt):
-        pass
+        self._fpsUpdateWait -= dt
+        if self._fpsUpdateWait <= 0.0:
+            self.fps = int(1.0/(dt/1000.0))
+            self._renderFPS(self.fps)
+            self._fpsUpdateWait = self._fpsUpdateDelay
 
     def write(self, data):
         try:
