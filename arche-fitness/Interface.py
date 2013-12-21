@@ -139,7 +139,6 @@ class Button(Sprite.Sprite):
     def _hover(self):
         """State invoked when the mouse is on top of the button."""
         if self.state != Button.STATE_HOVER:
-            log.debug("hovering over button")
             self.hover()
             if self.state == Button.STATE_PRESS:
                 if self.command:
@@ -148,13 +147,11 @@ class Button(Sprite.Sprite):
     def _press(self):
         """State invoked when the mouse is on top of the button and clicks."""
         if self.state != Button.STATE_PRESS:
-            log.debug("pressing button")
             self.press()
             self.state = Button.STATE_PRESS
     def _reset(self):
         """State invoked when the mouse is outside of the button boundary."""
         if self.state != Button.STATE_RESET:
-            log.debug("resetting button")
             self.reset()
             self.state = Button.STATE_RESET
 

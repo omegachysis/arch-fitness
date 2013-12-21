@@ -280,7 +280,8 @@ class GameConsole(object):
         canvas.blit(self._consoleSurface, (0,0))
         canvas.blit(self._entrySurface, self._entryRect)
         for message in self.messages:
-            canvas.blit(message[0], message[1])
+            if message[1].top > GameConsole.CONSOLE_PADDING:
+                canvas.blit(message[0], message[1])
         canvas.blit(self._fpsSurface, self._fpsRect)
             
 
