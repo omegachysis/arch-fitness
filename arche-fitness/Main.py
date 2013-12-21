@@ -61,9 +61,7 @@ class StartScreen(Engine.Application):
         self.pushupsButton = Interface.ImageButton(
             x = self.game.xprop(.5), y = self.game.yprop(.5),
             width = self.game.xprop(.15), height = self.game.xprop(.15),
-            imageReset = pygame.image.load("image/pushupsButtonReset.png").convert_alpha(),
-            imagePress = pygame.image.load("image/pushupsButtonPress.png").convert_alpha(),
-            imageHover = pygame.image.load("image/pushupsButtonHover.png").convert_alpha(),
+            imageGroup = Interface.loadButtonImageGroup("image/pushupsButton",".png"),
             command = None,
             textObject = Sprite.Text(
                 "Push-ups", 0, self.game.xprop(.055),

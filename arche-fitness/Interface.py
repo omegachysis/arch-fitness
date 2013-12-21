@@ -183,13 +183,13 @@ class ImageButton(Button):
         log.debug("initializing new image button")
 
         if imageGroup:
-            imageReset, imageHover, imagePress = imageGroup
+            self.imageReset, self.imageHover, self.imagePress = imageGroup
         else:
             self.imageReset = imageReset
             self.imageHover = imageHover
             self.imagePress = imagePress
 
-        self.surface = imageReset
+        self.surface = self.imageReset
 
         super(ImageButton, self).__init__(self.surface, x, y, command, textObject)
 
