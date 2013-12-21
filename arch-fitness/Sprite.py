@@ -1,8 +1,18 @@
 
+import pygame
+import sys
+from pygame.locals import *
+from pygame import transform
+import pygame.freetype
+import traceback
+import logging
+
+log = logging.getLogger("R.Engine.Sprite")
+
 class Sprite(object):
     game = None
     def __init__(self, surface, x, y):
-        self.log = logging.getLogger("R.Engine.Sprite")
+        self.log = log # Compatibility reasons - refactoring
 
         self._name = None
         

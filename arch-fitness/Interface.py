@@ -17,6 +17,7 @@ from pygame.locals import *
 import logging
 
 import Engine
+import Sprite
 
 log = logging.getLogger("R.Interface")
 
@@ -36,14 +37,14 @@ def main():
                              (255,0,0,255), (255,0,255,255), (0,255,0,255),
                              game.quit)
 
-    testButton2.text = Engine.Text("X", 50, 50, (255,255,255,255), 250, "consola.ttf")
+    testButton2.text = Sprite.Text("X", 50, 50, (255,255,255,255), 250, "consola.ttf")
 
     testApp.addSprite(testButton2)
 
     game.startApp(testApp)
     game.run()
 
-class SolidButton(Engine.Sprite):
+class SolidButton(Sprite.Sprite):
     STATE_RESET = 0
     STATE_HOVER = 1
     STATE_PRESS = 2
