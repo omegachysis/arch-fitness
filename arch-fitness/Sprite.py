@@ -14,7 +14,11 @@ class Sprite(object):
     def __init__(self, surface, x, y):
         self.log = log # Compatibility reasons - refactoring
 
+        # set up any private class variables.
         self._name = None
+        self._rect = None
+        self._surface = None
+        self.__surface__ = None
         
         self.surface = surface
         self.x = x
@@ -163,6 +167,12 @@ class Sprite(object):
     def setsurface(self, surface):
         self.__surface__ = surface
         self._surface = surface
+        # Trigger the game engine to scale the new surface to current
+        #  width and height.
+        if self._rect: # we can only do this with a rectangle object.
+            self.setWidth(self.getWidth())
+            self.setHeight(self.getHeight())
+        
         self._rect = surface.get_rect()
     surface = property(getsurface, setsurface)
 
@@ -225,3 +235,7 @@ class Text(Sprite):
         self._size = size
         self.render()
     size = property(getSize, setSize)
+
+def scaleImage(surface, width, height):
+    """ Return surface scaled to fit width and height. """
+    return transform.smoothscale(surface, (width, height))
