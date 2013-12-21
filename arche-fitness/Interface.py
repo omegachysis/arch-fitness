@@ -189,6 +189,10 @@ class ImageButton(Button):
             self.imageHover = imageHover
             self.imagePress = imagePress
 
+        self._imageReset = self.imageReset
+        self._imageHover = self.imageHover
+        self._imagePress = self.imagePress
+
         self.surface = self.imageReset
 
         super(ImageButton, self).__init__(self.surface, x, y, command, textObject)
@@ -196,12 +200,25 @@ class ImageButton(Button):
         self.width = width
         self.height = height
 
+    def setWidth(self, width):
+        self.imageReset = Sprite.scaleImage(self._imageReset, width, self.height)
+        self.imageHover = Sprite.scaleImage(self._imageHover, width, self.height)
+        self.imagePress = Sprite.scaleImage(self._imagePress, width, self.height)
+        self._rect.width = self.imageReset.get_width()
+    def setHeight(self, height):
+        self.imageReset = Sprite.scaleImage(self._imageReset, self.width, height)
+        self.imageHover = Sprite.scaleImage(self._imageHover, self.width, height)
+        self.imagePress = Sprite.scaleImage(self._imagePress, self.width, height)
+        self._rect.height = self.imageReset.get_height()
+    width = property(Button.getWidth, setWidth)
+    height= property(Button.getHeight, setHeight)
+
     def hover(self):
-        self.surface = self.imageHover
+        self._surface = self.imageHover
     def press(self):
-        self.surface = self.imagePress
+        self._surface = self.imagePress
     def reset(self):
-        self.surface = self.imageReset
+        self._surface = self.imageReset
         
 
 if __name__ == "__main__":
