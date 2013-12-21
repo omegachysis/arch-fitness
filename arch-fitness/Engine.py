@@ -31,9 +31,6 @@ import Sprite
 
 log = logging.getLogger("R.Engine")
 
-def scaleImage(surface, width, height):
-    return transform.smoothscale(surface, (width, height))
-
 class Game(object):
     
     def __init__(self, width, height, fullscreen=False):
