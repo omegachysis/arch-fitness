@@ -44,32 +44,19 @@ def main():
     game.startApp(testApp)
     game.run()
 
-class SolidButton(Sprite.Sprite):
+class Button(Sprite.Sprite):
     STATE_RESET = 0
     STATE_HOVER = 1
     STATE_PRESS = 2
-    def __init__(self, x=0, y=0, width=50, height=50,
-                 colorReset=(0,0,0), colorHover=(0,0,0), colorPress=(0,0,0),
-                 command=None, textObject=None):
-        """
-        Create a solid colored button that runs 'command' when clicked.
-        """
-        log.debug("intializing new solid button")
+    def __init__(self, surface, x=0, y=0, command=None, textObject=None):
 
-        self.text = None
+        self.text = None # Changing coordinates in init would cause problems without defining this.
+        
+        super(Button, self).__init__(surface, x, y)
 
-        # Fill a rectangular and blank surface with the reset color
-        self.surface = pygame.Surface((width, height))
-        self.surface.fill(colorReset)
+        self.surface = surface
 
-        # Set up Sprite object
-        super(SolidButton, self).__init__(self.surface, x, y)
-
-        self.state = SolidButton.STATE_RESET
-
-        self.colorReset = colorReset
-        self.colorHover = colorHover
-        self.colorPress = colorPress
+        self.state = Button.STATE_RESET
 
         self.text = textObject
         if textObject:
@@ -79,44 +66,22 @@ class SolidButton(Sprite.Sprite):
             self.text.y = self.y + self.text._parentedY
 
         self.command = command
-        
+
     def draw(self, canvas):
-        super(SolidButton, self).draw(canvas)
+        super(Button, self).draw(canvas)
         if self.text:
             self.text.draw(canvas)
         
     def setX(self, x):
-        super(SolidButton, self).setX(x)
+        super(Button, self).setX(x)
         if self.text:
             self.text.x = self.x + self.text._parentedX
     def setY(self, y):
-        super(SolidButton, self).setY(y)
+        super(Button, self).setY(y)
         if self.text:
             self.text.y = self.y + self.text._parentedY
     x = property(Sprite.Sprite.getX, setX)
     y = property(Sprite.Sprite.getY, setY)
-
-    def hover(self):
-        """State invoked when the mouse is on top of the button."""
-        if self.state != SolidButton.STATE_HOVER:
-            log.debug("hovering over button")
-            self.surface.fill(self.colorHover)
-            if self.state == SolidButton.STATE_PRESS:
-                if self.command:
-                    self.command()
-            self.state = SolidButton.STATE_HOVER
-    def press(self):
-        """State invoked when the mouse is on top of the button and clicks."""
-        if self.state != SolidButton.STATE_PRESS:
-            log.debug("pressing button")
-            self.state = SolidButton.STATE_PRESS
-            self.surface.fill(self.colorPress)
-    def reset(self):
-        """State invoked when the mouse is outside of the button boundary."""
-        if self.state != SolidButton.STATE_RESET:
-            log.debug("resetting button")
-            self.state = SolidButton.STATE_RESET
-            self.surface.fill(self.colorReset)
 
     def update(self, dt):
         pass
@@ -127,17 +92,69 @@ class SolidButton(Sprite.Sprite):
         if mousex > self.left and mousex < self.right and \
            mousey > self.top  and mousey < self.bottom:
             if pygame.mouse.get_pressed()[0]:
-                self.press()
+                self._press()
             else:
-                self.hover()
+                self._hover()
         else:
-            self.reset()
+            self._reset()
 
-        super(SolidButton, self).tick(dt)
+        super(Button, self).tick(dt)
 
         self.update(dt)
 
-class ImageButton(Sprite.Sprite):
+    def hover(self): pass
+    def press(self): pass
+    def reset(self): pass
+    
+    def _hover(self):
+        """State invoked when the mouse is on top of the button."""
+        if self.state != Button.STATE_HOVER:
+            log.debug("hovering over button")
+            self.hover()
+            if self.state == Button.STATE_PRESS:
+                if self.command:
+                    self.command()
+            self.state = Button.STATE_HOVER
+    def _press(self):
+        """State invoked when the mouse is on top of the button and clicks."""
+        if self.state != Button.STATE_PRESS:
+            log.debug("pressing button")
+            self.press()
+            self.state = Button.STATE_PRESS
+    def _reset(self):
+        """State invoked when the mouse is outside of the button boundary."""
+        if self.state != Button.STATE_RESET:
+            log.debug("resetting button")
+            self.reset()
+            self.state = Button.STATE_RESET
+
+class SolidButton(Button):
+    def __init__(self, x=0, y=0, width=50, height=50,
+                 colorReset=(0,0,0), colorHover=(0,0,0), colorPress=(0,0,0),
+                 command=None, textObject=None):
+        """
+        Create a solid colored button that runs 'command' when clicked.
+        """
+        log.debug("intializing new solid button")
+
+        # Fill a rectangular and blank surface with the reset color
+        self.surface = pygame.Surface((width, height))
+        self.surface.fill(colorReset)
+
+        super(SolidButton, self).__init__(self.surface, x, y, command, textObject)
+
+        self.colorReset = colorReset
+        self.colorHover = colorHover
+        self.colorPress = colorPress
+
+    def hover(self):
+        self.surface.fill(self.colorHover)
+    def press(self):
+        self.surface.fill(self.colorPress)
+    def reset(self):
+        self.surface.fill(self.colorReset)
+
+class ImageButton(Button):
     STATE_RESET = 0
     STATE_HOVER = 1
     STATE_PRESS = 2
@@ -151,84 +168,21 @@ class ImageButton(Sprite.Sprite):
 
         self.surface = imageReset
 
-        self.text = None
-
-        super(ImageButton, self).__init__(self.surface, x, y)
+        super(ImageButton, self).__init__(self.surface, x, y, command, textObject)
 
         self.width = width
         self.height = height
-
-        self.state = ImageButton.STATE_RESET
 
         self.imageReset = imageReset
         self.imageHover = imageHover
         self.imagePress = imagePress
 
-        self.command = command
-
-        self.text = textObject
-        if textObject:
-            self.text._parentedX = self.text.x
-            self.text._parentedY = self.text.y
-            self.text.x = self.x + self.text._parentedX
-            self.text.y = self.y + self.text._parentedY
-
-    def draw(self, canvas):
-        super(ImageButton, self).draw(canvas)
-        if self.text:
-            self.text.draw(canvas)
-
-    def setX(self, x):
-        super(ImageButton, self).setX(x)
-        if self.text:
-            self.text.x = self.x + self.text._parentedX
-    def setY(self, y):
-        super(ImageButton, self).setY(y)
-        if self.text:
-            self.text.y = self.y + self.text._parentedY
-    x = property(Sprite.Sprite.getX, setX)
-    y = property(Sprite.Sprite.getY, setY)
-
     def hover(self):
-        """State invoked when the mouse is on top of the button."""
-        if self.state != ImageButton.STATE_HOVER:
-            log.debug("hovering over button")
-            self.surface = self.imageHover
-            if self.state == ImageButton.STATE_PRESS:
-                if self.command:
-                    self.command()
-            self.state = ImageButton.STATE_HOVER
+        self.surface = self.imageHover
     def press(self):
-        """State invoked when the mouse is on top of the button and clicks."""
-        if self.state != ImageButton.STATE_PRESS:
-            log.debug("pressing button")
-            self.surface = self.imagePress
-            self.state = ImageButton.STATE_PRESS
+        self.surface = self.imagePress
     def reset(self):
-        """State invoked when the mouse is outside of the button boundary."""
-        if self.state != ImageButton.STATE_RESET:
-            log.debug("resetting button")
-            self.surface = self.imageReset
-            self.state = ImageButton.STATE_RESET
-
-    def update(self, dt):
-        pass
-
-    def tick(self, dt):
-        mousex, mousey = pygame.mouse.get_pos()
-
-        if mousex > self.left and mousex < self.right and \
-           mousey > self.top  and mousey < self.bottom:
-            if pygame.mouse.get_pressed()[0]:
-                self.press()
-            else:
-                self.hover()
-        else:
-            self.reset()
-
-        super(ImageButton, self).tick(dt)
-
-        self.update(dt)
+        self.surface = self.imageReset
         
 
 if __name__ == "__main__":
