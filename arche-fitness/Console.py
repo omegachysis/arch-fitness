@@ -171,32 +171,29 @@ class GameConsole(object):
         See console command guide for shortcut ($)
         """
         c = self
+        self = self.env
         exec(open("script/" + script).read())
 
     def execute(self, c, command):
         """ Execute a console command with 'c' as the GameConsole instance. """
         c = self # we only use 'c' in the execute function for compatibility with other environments!
+        self = self.env
         log.info("(execute) " + command)
         try:
             if command[0] == "$":
-                self.env.execute(self, "c.runScript('" + command[1:] + ".py')")
+                self.runScript(command[1:] + ".py")
             else:
-                if self.env == self or command[0] == "#":
-                    if command[0] == "#":
-                        if command[1] == "?":
-                            exec("print(" + command[2:] + ")")
-                        else:
-                            exec(command[1:])
+                if command[0] == "#":
+                    self = c
+                    if command[1] == "?":
+                        exec("print(" + command[2:] + ")")
                     else:
-                        if command[0] == "?":
-                            exec("print(" + command[1:] + ")")
-                        else:
-                            exec(command)
+                        exec(command[1:])
                 else:
                     if command[0] == "?":
-                        self.env.execute(self, "print(" + command[1:] + ")")
+                        exec("print(" + command[1:] + ")")
                     else:
-                        self.env.execute(self, command)
+                        exec(command)
         except:
             log.error("(execute) " + traceback.format_exc())
 

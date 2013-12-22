@@ -49,9 +49,6 @@ class Sprite(object):
         self._name = name
     name = property(getName, setName)
 
-    def execute(self, c, command):
-        exec(command)
-
     def getHidden(self):
         return self._hidden
     def setHidden(self, hidden):

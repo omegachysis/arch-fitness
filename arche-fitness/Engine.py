@@ -65,9 +65,6 @@ class Game(object):
         return int(self.width * proportion)
     def yprop(self, proportion):
         return int(self.height * proportion)
-
-    def execute(self, c, command):
-        exec(command)
         
     def startApp(self, application):
         self.app = application
@@ -138,9 +135,6 @@ class Application(object):
         self.canvas = Application.canvas
 
         self.addLayer("default")
-
-    def execute(self, c, command):
-        exec(command)
 
     def getLayerlevel(self, layer):
         return self._layers.index(layer)
