@@ -43,7 +43,7 @@ class StartScreen(Engine.Application):
     def __init__(self):
         super(StartScreen, self).__init__()
 
-        self.backgroundColor = (0,0,0)
+        self.backgroundColor = (255,255,255)
 
         self.quitButton = Interface.SolidButton(
             width = 70, height = 40,

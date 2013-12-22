@@ -105,6 +105,12 @@ class Game(object):
                     else:
                         if not self.gameConsole.hidden:
                             self.gameConsole.entryAdd(event.unicode)
+                elif event.type == MOUSEBUTTONDOWN:
+                    if not self.gameConsole.hidden:
+                        if event.button == 4:
+                            self.gameConsole.scrollUp()
+                        elif event.button == 5:
+                            self.gameConsole.scrollDown()
 
             pygame.display.update()
             self.clock.tick(self.limitFramerate)

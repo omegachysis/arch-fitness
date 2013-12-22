@@ -70,7 +70,7 @@ class GameConsole(object):
     DARKEN_WIDTH = .80 # percent of screen width to darken from console background
     TEXT_OVERFLOW = 80 # characters at 1280 px width
     LOGSOURCE_SPACING = 25 # characters to space after logging source values
-    MESSAGE_BUFFER_LENGTH = 40 # messages to render before deleting
+    MESSAGE_BUFFER_LENGTH = 100 # messages to render before deleting
     
     def __init__(self, game, level=logging.INFO):
         sys.stdout = ConsoleSTDOUT(self)
@@ -80,6 +80,8 @@ class GameConsole(object):
         self.fps = 0
         self._fpsUpdateWait = 0
         self._fpsUpdateDelay = 100
+
+        self.scrollOffset = 0
 
         GameConsole.TEXT_OVERFLOW = int(
             GameConsole.TEXT_OVERFLOW * float(game.width) / 1280.0)
@@ -272,7 +274,7 @@ class GameConsole(object):
         for message in self.messages:
             i -= 1
             message[1].top = self.game.height - \
-                                GameConsole.MESSAGE_HEIGHT * i - \
+                                GameConsole.MESSAGE_HEIGHT * (i + self.scrollOffset) - \
                                 GameConsole.CONSOLE_PADDING
             message[1].left = GameConsole.PADDING_LEFT
 
@@ -280,7 +282,8 @@ class GameConsole(object):
         canvas.blit(self._consoleSurface, (0,0))
         canvas.blit(self._entrySurface, self._entryRect)
         for message in self.messages:
-            if message[1].top > GameConsole.CONSOLE_PADDING:
+            if message[1].top > GameConsole.CONSOLE_PADDING and\
+               message[1].bottom < self.game.height - GameConsole.CONSOLE_PADDING:
                 canvas.blit(message[0], message[1])
         canvas.blit(self._fpsSurface, self._fpsRect)
             
@@ -291,7 +294,15 @@ class GameConsole(object):
     def entryBackspace(self):
         self.entry = self.entry[:-1]
         self._renderEntry()
-
+    def scrollUp(self, messages=1):
+        """ Move one message upwards through the Console buffer. """
+        self.scrollOffset -= messages
+        self._recalculateCoordinates()
+    def scrollDown(self, messages=1):
+        """ Move one message downwards through the Console buffer. """
+        self.scrollOffset += messages
+        self._recalculateCoordinates()
+        
     def update(self, dt):
         self._fpsUpdateWait -= dt
         if self._fpsUpdateWait <= 0.0:
