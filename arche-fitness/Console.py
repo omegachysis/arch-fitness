@@ -81,7 +81,7 @@ class GameConsole(object):
         self._fpsUpdateWait = 0
         self._fpsUpdateDelay = 100
 
-        self.scrollOffset = 0
+        self.scrollOffset = 1
 
         GameConsole.TEXT_OVERFLOW = int(
             GameConsole.TEXT_OVERFLOW * float(game.width) / 1280.0)
@@ -125,15 +125,7 @@ class GameConsole(object):
     def sprite(self, spriteName):
         """ Return sprite from application registry """
         return self.game.app.reg(spriteName)
-
-    def runScript(self, script):
-        """
-        Run script from script directory.
-        See console command guide for shortcut ($)
-        """
-        gc = self
-        exec(open("script/" + script).read())
-
+        
     def resetConfiguration(self):
         """ Load default console configuration. """
         exec(open("config/console.cfg", 'r').read())
@@ -172,6 +164,14 @@ class GameConsole(object):
         self.env = self
     def resetEnv(self): #shorthand
         self.env = self
+
+    def runScript(self, script):
+        """
+        Run script from script directory.
+        See console command guide for shortcut ($)
+        """
+        c = self
+        exec(open("script/" + script).read())
 
     def execute(self, c, command):
         """ Execute a console command with 'c' as the GameConsole instance. """
