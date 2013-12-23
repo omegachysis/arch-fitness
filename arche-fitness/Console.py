@@ -147,6 +147,7 @@ class GameConsole(object):
                 return True
         return False
     def isEnvironment(self, environment):
+        # Deprecated!
         """ Return whether 'environment' is a suitable environ for the console. """
         return hasattr(environment, 'execute')
     isEnv = isEnvironment
